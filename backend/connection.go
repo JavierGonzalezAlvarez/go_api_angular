@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
 
+/*
 const (
 	host     = "localhost"
 	port     = 5432
@@ -18,9 +20,10 @@ const (
 	password = "2525_ap"
 	dbname   = "invoices"
 )
+*/
 
 type HeaderPostgres struct {
-	Idheader      int       `json:"courseid"`
+	Idheader      int       `json:"idheader"`
 	Companyname   string    `json:"companyname"`
 	Address       string    `json:"address"`
 	NumberInvoice int       `json:"numberinvoice"`
@@ -36,10 +39,22 @@ func postgres() []HeaderPostgres {
 		log.Fatal("Error loading .env file")
 	}
 
+	for _, e := range os.Environ() {
+
+		pair := strings.SplitN(e, "=", 2)
+		fmt.Printf("%s: %s\n", pair[0], pair[1])
+	}
+
+	fmt.Println("user", os.Getenv("USER"))
 	//connect db
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
+	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
 		"password=%s dbname=%s sslmode=disable",
-		os.Getenv("LOCALHOST"), port, user, password, dbname)
+		os.Getenv("LOCALHOST"),
+		os.Getenv("PORT"),
+		os.Getenv("USUARIO"),
+		os.Getenv("PASSWORD"),
+		os.Getenv("DBNAME"),
+	)
 
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
@@ -63,11 +78,7 @@ func postgres() []HeaderPostgres {
 	var result = []HeaderPostgres{}
 	for rows.Next() {
 		var item HeaderPostgres
-
-		//json.Marshal works with predefined datatypes. For JSON we need to create two functions -
-		//Scan() - To parse JSON from database to Go struct.
 		rows.Scan(&item.Idheader, &item.Companyname, &item.Address, &item.NumberInvoice, &item.DateTime, &item.CreatedAt)
-
 		result = append(result, item)
 		fmt.Println(result)
 	}

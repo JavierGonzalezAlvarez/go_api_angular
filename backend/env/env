@@ -1,1 +1,5 @@
 LOCALHOST="localhost"
+PORT="5432"
+USUARIO="test"
+PASSWORD="2525_ap"
+DBNAME="invoices"
