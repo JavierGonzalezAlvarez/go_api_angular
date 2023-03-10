@@ -30,6 +30,11 @@ type Detail struct {
 	CreatedAt   time.Time `json:"createdat"`
 }
 
+// middleware, validation
+func (h *Header) IsEmpty() bool {
+	return h.Companyname == ""
+}
+
 func main() {
 	fmt.Println("api")
 
@@ -37,20 +42,26 @@ func main() {
 	router.HandleFunc("/", home).Methods("GET")
 	router.HandleFunc("/get", getAllRecords).Methods("GET")
 	router.HandleFunc("/getOne/{id}", getOneRecord).Methods("GET")
+	router.HandleFunc("/createOne", createOneRecord).Methods("POST")
+	router.HandleFunc("/updateOne/{id}", updateOneRecord).Methods("PUT")
+	router.HandleFunc("/deleteOne/{id}", deleteOneRecord).Methods("DELETE")
 
 	//http://localhost:4000/
 	fmt.Println("running on http://localhost:4000/")
 	fmt.Println("running on http://localhost:4000/get")
 	fmt.Println("running on http://localhost:4000/getOne/1")
+	fmt.Println("runing on http://localhost:4000/createOne")
+	fmt.Println("running on http://localhost:4000/updateOne/1")
+	fmt.Println("running on http://localhost:4000/deleteOne/1")
 
 	log.Fatal(http.ListenAndServe(":4000", router))
 }
 
 // retrieve data from postgres
-var data = postgres()
+var data = q_sql()
 
 func home(w http.ResponseWriter, router *http.Request) {
-	w.Write([]byte("<h1>api postgres</h1>"))
+	w.Write([]byte("<h1>api go & postgres & angular 15</h1>"))
 }
 
 func getAllRecords(w http.ResponseWriter, router *http.Request) {
@@ -80,7 +91,41 @@ func getOneRecord(w http.ResponseWriter, router *http.Request) {
 			return
 		}
 	}
-
 	json.NewEncoder(w).Encode("No record found by this id")
+}
+
+var headers = []Header{}
+
+func createOneRecord(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("create a new record")
+	w.Header().Set("content-type", "application/json")
+
+	//check if data is empty
+	if r.Body == nil {
+		json.NewEncoder(w).Encode("Pls send some data or validate data sent")
+	}
+
+	println(r.Body)
+
+	var header Header
+	_ = json.NewDecoder(r.Body).Decode(&header)
+	if header.IsEmpty() {
+		json.NewEncoder(w).Encode("Pls send some data")
+		return
+	}
+
+	headers = append(headers, header)
+	//response (200)
+	json.NewEncoder(w).Encode(header)
+	//print json
+	finalJson, _ := json.MarshalIndent(header, "", "\t")
+	fmt.Println("final response json indented", string(finalJson))
+	fmt.Println("type of json = ", reflect.TypeOf(finalJson))
+
+	insert_sql(finalJson)
 	return
 }
+
+func updateOneRecord(w http.ResponseWriter, r *http.Request) {}
+
+func deleteOneRecord(w http.ResponseWriter, r *http.Request) {}
