@@ -13,7 +13,7 @@ import (
 )
 
 type Header struct {
-	Idheader      int       `json:"headerid"`
+	Idheader      int       `json:"idheader"`
 	Companyname   string    `json:"companyname"`
 	Address       string    `json:"address"`
 	NumberInvoice int       `json:"numberinvoice"`
@@ -57,32 +57,31 @@ func main() {
 	log.Fatal(http.ListenAndServe(":4000", router))
 }
 
-// retrieve data from postgres
-var data = q_sql()
-
-func home(w http.ResponseWriter, router *http.Request) {
+func home(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("<h1>api go & postgres & angular 15</h1>"))
 }
 
-func getAllRecords(w http.ResponseWriter, router *http.Request) {
+func getAllRecords(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("get all records")
+	// retrieve data from postgres
+	var data = q_sql()
 	w.Header().Set("content-type", "application/json")
 	json.NewEncoder(w).Encode(data)
 }
 
-func getOneRecord(w http.ResponseWriter, router *http.Request) {
+func getOneRecord(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("get one record")
 	w.Header().Set("content-type", "application/json")
 
-	params_value := mux.Vars(router)
+	params_value := mux.Vars(r)
 	fmt.Println("params in url", params_value)
 
-	id_params := mux.Vars(router)["id"]
+	id_params := mux.Vars(r)["id"]
 	fmt.Println("value of params id from url: ", id_params)
 	fmt.Println("type of id params = ", reflect.TypeOf(id_params))
 	//convert to int
 	intVar, _ := strconv.Atoi(id_params)
-	//intVar, _ := strconv.ParseInt(params, 0, 8) // convert to int64
+	var data = q_sql_one(intVar)
 	fmt.Println("type of id params = ", reflect.TypeOf(intVar))
 
 	for _, header := range data {
@@ -92,6 +91,7 @@ func getOneRecord(w http.ResponseWriter, router *http.Request) {
 		}
 	}
 	json.NewEncoder(w).Encode("No record found by this id")
+
 }
 
 var headers = []Header{}
@@ -104,9 +104,7 @@ func createOneRecord(w http.ResponseWriter, r *http.Request) {
 	if r.Body == nil {
 		json.NewEncoder(w).Encode("Pls send some data or validate data sent")
 	}
-
 	println(r.Body)
-
 	var header Header
 	_ = json.NewDecoder(r.Body).Decode(&header)
 	if header.IsEmpty() {
@@ -126,6 +124,56 @@ func createOneRecord(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func updateOneRecord(w http.ResponseWriter, r *http.Request) {}
+func updateOneRecord(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("update one record")
+	w.Header().Set("content-type", "application/json")
 
-func deleteOneRecord(w http.ResponseWriter, r *http.Request) {}
+	// check if required data is empty
+	var headerRequire Header
+	_ = json.NewDecoder(r.Body).Decode(&headerRequire)
+	if headerRequire.IsEmpty() {
+		json.NewEncoder(w).Encode("Pls send some data")
+		return
+	}
+
+	//get id
+	params_value := mux.Vars(r)
+	fmt.Println("params in url", params_value)
+	id_params := mux.Vars(r)["id"]
+	fmt.Println("value of params id from url: ", id_params)
+	intVar, _ := strconv.Atoi(id_params)
+	var data = q_sql_one(intVar)
+
+	for _, header := range data {
+		if header.Idheader == intVar {
+			fmt.Println("record exist")
+
+			//json of old data
+			var UpdateJson HeaderPostgres
+			finalJson, _ := json.MarshalIndent(header, "", "\t")
+			json.Unmarshal([]byte(finalJson), &UpdateJson)
+			fmt.Printf("Id Header: %v, Company Name %s \n", UpdateJson.Idheader, UpdateJson.Companyname)
+
+			//json to struct
+			//header update
+			//UpdateJson.Idheader = final.IdHeader
+			//UpdateJson.Companyname
+
+			//new struct to json
+
+			// update to be done, required
+			headers = append(headers, headerRequire)
+			json.NewEncoder(w).Encode(headerRequire)
+			final, _ := json.MarshalIndent(headerRequire, "", "\t")
+			fmt.Println("record to be updated", string(final))
+
+			update_sql(final)
+			return
+		}
+	}
+	json.NewEncoder(w).Encode("No record found by this id")
+
+	return
+}
+
+func deleteOneRecord(w http.ResponseWriter, router *http.Request) {}
