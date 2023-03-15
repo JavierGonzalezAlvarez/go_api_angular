@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 )
 
 type Header struct {
@@ -54,7 +55,8 @@ func main() {
 	fmt.Println("running on http://localhost:4000/updateOne/1")
 	fmt.Println("running on http://localhost:4000/deleteOne/1")
 
-	log.Fatal(http.ListenAndServe(":4000", router))
+	handler := cors.Default().Handler(router)
+	log.Fatal(http.ListenAndServe(":8080", handler))
 }
 
 func home(w http.ResponseWriter, r *http.Request) {
@@ -172,8 +174,28 @@ func updateOneRecord(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	json.NewEncoder(w).Encode("No record found by this id")
-
 	return
 }
 
-func deleteOneRecord(w http.ResponseWriter, router *http.Request) {}
+func deleteOneRecord(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("delete one record")
+	w.Header().Set("content-type", "application/json")
+
+	//get id
+	params_value := mux.Vars(r)
+	fmt.Println("params in url", params_value)
+	id_params := mux.Vars(r)["id"]
+	fmt.Println("value of params id from url: ", id_params)
+	intVar, _ := strconv.Atoi(id_params)
+	var data = q_sql_one(intVar)
+
+	for _, header := range data {
+		if header.Idheader == intVar {
+			fmt.Println("record exist")
+			delete_sql_one(intVar)
+			return
+		}
+	}
+	json.NewEncoder(w).Encode("No record found by this id")
+	return
+}

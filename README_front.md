@@ -8,3 +8,15 @@ style: scss
 
 ## run front
 npx ng serve
+
+path: frontend
+$ npm install
+
+## create components
+path: frontend
+$ npx ng g component components/header
+$ npx ng g component components/footer
+$ npx ng g component components/home
+$ npx ng g component components/login
+$ npx ng g component components/profile
+$ npx ng g component components/register

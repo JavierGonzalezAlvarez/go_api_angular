@@ -83,6 +83,8 @@ func q_sql() []HeaderPostgres {
 	}
 	defer rows.Close()
 
+	fmt.Println("list of records")
+	fmt.Println("---------------")
 	var result = []HeaderPostgres{}
 	for rows.Next() {
 		var item HeaderPostgres
@@ -129,7 +131,7 @@ func q_sql_one(id int) []HeaderPostgres {
 }
 
 func insert_sql(dataPost []uint8) {
-	fmt.Println("insert to psql")
+	fmt.Println("insert sql")
 
 	err := godotenv.Load("./env/env")
 	if err != nil {
@@ -163,7 +165,7 @@ func insert_sql(dataPost []uint8) {
 }
 
 func update_sql(dataPost []uint8) {
-	fmt.Println("update to psql")
+	fmt.Println("update sql")
 
 	err := godotenv.Load("./env/env")
 	if err != nil {
@@ -189,8 +191,43 @@ func update_sql(dataPost []uint8) {
 	if err != nil {
 		log.Fatal(err)
 	} else {
-		fmt.Println("\nRow selected successfully!")
+		fmt.Println("\nRow updates successfully!")
 	}
 	defer rows.Close()
 	return
+}
+
+func delete_sql_one(id int) {
+	fmt.Println("delete sql")
+
+	err := godotenv.Load("./env/env")
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	var db = connexion()
+	err = db.Ping()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Successfully connected!")
+	defer db.Close()
+
+	rows, err := db.Query("delete from header where id_header = $1", id)
+	//rows, err := db.Query(`SELECT * FROM header WHERE id_header = $1`, id)
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		fmt.Println("\nRow deletes successfully!")
+	}
+	defer rows.Close()
+
+	//var result = []HeaderPostgres{}
+	//for rows.Next() {
+	//	var item HeaderPostgres
+	//	rows.Scan(&item.Idheader, &item.Companyname, &item.Address, &item.NumberInvoice, &item.DateTime, &item.CreatedAt)
+	//	result = append(result, item)
+	//	fmt.Println("result: ", result)
+	//}
+
 }
