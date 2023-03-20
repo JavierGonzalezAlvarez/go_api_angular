@@ -48,12 +48,12 @@ func main() {
 	router.HandleFunc("/deleteOne/{id}", deleteOneRecord).Methods("DELETE")
 
 	//http://localhost:4000/
-	fmt.Println("running on http://localhost:4000/")
-	fmt.Println("running on http://localhost:4000/get")
-	fmt.Println("running on http://localhost:4000/getOne/1")
-	fmt.Println("runing on http://localhost:4000/createOne")
-	fmt.Println("running on http://localhost:4000/updateOne/1")
-	fmt.Println("running on http://localhost:4000/deleteOne/1")
+	fmt.Println("running on http://localhost:8080/")
+	fmt.Println("running on http://localhost:8080/get")
+	fmt.Println("running on http://localhost:8080/getOne/1")
+	fmt.Println("runing on http://localhost:8080/createOne")
+	fmt.Println("running on http://localhost:8080/updateOne/1")
+	fmt.Println("running on http://localhost:8080/deleteOne/1")
 
 	handler := cors.Default().Handler(router)
 	log.Fatal(http.ListenAndServe(":8080", handler))
