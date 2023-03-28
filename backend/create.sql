@@ -28,3 +28,13 @@ INSERT INTO detail(id_header, description, units, price, created_at)
 VALUES(1, 'product A', 2, 23.2, now()),
       (1, 'product B', 5, 10.0, now()),
       (2, 'product B', 19, 45.31, now());
+
+create table usuario (
+    id serial,
+    username varchar(25),
+    email varchar(50),
+    created_at timestamp,
+    PRIMARY KEY(id)
+);
+
+ALTER TABLE usuario ADD COLUMN token VARCHAR(255);

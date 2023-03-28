@@ -17,7 +17,6 @@ path: frontend
 * $ npx ng g component components/header
 * $ npx ng g component components/footer
 * $ npx ng g component components/home
-* $ npx ng g component components/login
 * $ npx ng g component components/profile
 * $ npx ng g component components/register
 
@@ -27,7 +26,18 @@ path: frontend
 * $ npx ng g component list/listGeneral --skip-tests=true
 * $ npx ng g component list/listInvoices --skip-tests=true
 
-# material design
+## material design
 * $ npx ng add @angular/material
 * $ npx ng g module material
 
+## service security
+* $ npx ng g component components/seguridad
+* $ npx ng g component components/seguridad/login --skip-tests=true
+* $ npx ng g s components/seguridad/service
+* $ npx ng g s components/seguridad/seguridad-interceptor
+
+* $ npx ng g s list/service
+
+## interfaces
+* $ npx ng g interface interfaces/seguridad
+* $ npx ng g interface interfaces/invoices
