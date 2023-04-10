@@ -7,7 +7,7 @@ $ npx -p @angular/cli@15.0.0 ng new frontend
 * style: scss
 
 ## run front
-npx ng serve
+$ npx ng serve
 
 - path: frontend
 $ npm install

@@ -10,7 +10,6 @@ const routes: Routes = [
   {path: 'login', component: LoginComponent},
   {path: 'list', component: ListInvoicesComponent},
   {path: '**', redirectTo: ''}
-
 ];
 
 @NgModule({

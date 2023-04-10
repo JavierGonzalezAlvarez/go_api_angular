@@ -45,11 +45,12 @@ import { SeguridadInterceptorService } from './components/seguridad/seguridad-in
     HttpClientModule
   ],
   providers: [
+    // error handling in the response
     //{
-    //provide: HTTP_INTERCEPTORS,
-    //useClass: SeguridadInterceptorService,
-    //multi: true
-    //  }
+    //  provide: HTTP_INTERCEPTORS,
+    //  useClass: SeguridadInterceptorService,
+    //  multi: true
+    //}
 ],
   bootstrap: [AppComponent]
 })

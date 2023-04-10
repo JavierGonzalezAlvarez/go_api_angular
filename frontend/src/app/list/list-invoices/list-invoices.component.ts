@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { HttpResponse } from '@angular/common/http';
-import { Invoices } from 'src/app/interfaces/invoices';
+import { Invoices, serverResponse } from 'src/app/interfaces/invoices';
 import { ServiceService } from '../service.service';
 
 @Component({
@@ -19,8 +19,17 @@ export class ListInvoicesComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadData();
+ 
   }
 
+  loadData() {
+    this.listService.getAll().subscribe((invs: serverResponse["invoices"]) => {
+      this.invoices = invs;
+      console.log("invoices: ", this.invoices)
+    });
+  }
+
+  /*
   loadData() {
     this.listService.getAll().subscribe((inv: Invoices[]) => {
       //console.log(inv)
@@ -28,5 +37,5 @@ export class ListInvoicesComponent implements OnInit {
       console.log("invoices", this.invoices);
     })
   };
-
+  */
 }

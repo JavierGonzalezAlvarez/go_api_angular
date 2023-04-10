@@ -1,1 +1,9 @@
-<p>list-invoices works!</p>
+<h1>List of Invoices</h1>
+
+<p>id - company - address</p>
+<div *ngFor="let i of invoices">
+    <div>
+        <p>{{i.idheader}} - {{i.companyname | titlecase}} - {{i.address | titlecase}}</p>
+    </div>
+</div>
+     
