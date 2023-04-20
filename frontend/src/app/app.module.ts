@@ -20,6 +20,7 @@ import { SeguridadComponent } from './components/seguridad/seguridad.component';
 
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'
 import { SeguridadInterceptorService } from './components/seguridad/seguridad-interceptor.service';
+import { ListInvoicesDetailsComponent } from './list/list-invoices-details/list-invoices-details.component';
 
 
 @NgModule({
@@ -35,7 +36,8 @@ import { SeguridadInterceptorService } from './components/seguridad/seguridad-in
     ListInvoicesComponent,
     MenuComponent,
     TitleComponent,
-    SeguridadComponent
+    SeguridadComponent,
+    ListInvoicesDetailsComponent
   ],
   imports: [
     BrowserModule,

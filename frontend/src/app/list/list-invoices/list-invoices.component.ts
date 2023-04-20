@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 import { HttpResponse } from '@angular/common/http';
 import { Invoices, serverResponse } from 'src/app/interfaces/invoices';
@@ -11,10 +11,11 @@ import { ServiceService } from '../service.service';
 })
 export class ListInvoicesComponent implements OnInit {
 
-  invoices: Invoices[] = [];
+  @Input()
+  invoices_child: Invoices[] = [];
 
   constructor(private listService: ServiceService) {
-    this.invoices = [];
+    this.invoices_child = [];
    }
 
   ngOnInit(): void {
@@ -24,11 +25,11 @@ export class ListInvoicesComponent implements OnInit {
 
   loadData() {
     this.listService.getAll().subscribe((invs: serverResponse["invoices"]) => {
-      this.invoices = invs;
-      console.log("invoices: ", this.invoices)
+      this.invoices_child = invs;
+      console.log("invoices: ", this.invoices_child)
     });
   }
-
+  
   /*
   loadData() {
     this.listService.getAll().subscribe((inv: Invoices[]) => {

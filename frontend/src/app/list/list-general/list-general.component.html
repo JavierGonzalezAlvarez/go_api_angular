@@ -1,1 +1,8 @@
-<p>list-general works!</p>
+<h3>General List</h3>
+
+<h4>Data from child</h4>
+
+<ng-container *ngIf="list_invoices_general && list_invoices_general.length > 0">
+    <ng-content select="[contenido]">
+    </ng-content>
+</ng-container>

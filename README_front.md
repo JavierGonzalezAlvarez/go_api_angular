@@ -25,6 +25,7 @@ path: frontend
 
 * $ npx ng g component list/listGeneral --skip-tests=true
 * $ npx ng g component list/listInvoices --skip-tests=true
+* $ npx ng g component list/listInvoicesDetails --skip-tests=true
 
 ## material design
 * $ npx ng add @angular/material
@@ -33,6 +34,8 @@ path: frontend
 ## service security
 * $ npx ng g component components/seguridad
 * $ npx ng g component components/seguridad/login --skip-tests=true
+* $ npx ng g component components/seguridad/register --skip-tests=true
+
 * $ npx ng g s components/seguridad/service
 * $ npx ng g s components/seguridad/seguridad-interceptor
 
