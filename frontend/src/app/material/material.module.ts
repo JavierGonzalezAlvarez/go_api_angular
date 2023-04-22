@@ -4,6 +4,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from "@angular/material/icon"
 import { MatButtonModule } from "@angular/material/button"
 
+import {MatTableModule} from '@angular/material/table';
+import {CdkTableModule} from '@angular/cdk/table';
 
 @NgModule({
   declarations: [],
@@ -13,7 +15,9 @@ import { MatButtonModule } from "@angular/material/button"
   exports: [
     MatToolbarModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    CdkTableModule,
+    MatTableModule,
   ]
 })
 export class MaterialModule { }

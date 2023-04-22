@@ -33,3 +33,19 @@ div {
     padding-bottom: 50px;
     padding-left: 10px;
 }
+
+.table_list_invoices {
+    width: 100%;
+    padding-top: 10px;
+    padding-right: 30px;
+    padding-bottom: 50px;
+    padding-left: 10px;
+}
+  
+.list_invoices-button-container {
+  padding-bottom: 16px;
+}
+  
+.list_invoices-button + .list_invoices-button {
+  margin-left: 8px;
+}
