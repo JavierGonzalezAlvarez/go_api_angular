@@ -37,23 +37,50 @@ func (h *Header) IsEmpty() bool {
 }
 
 func main() {
-	fmt.Println("api")
+	fmt.Println("back api")
+	fmt.Println("running on http://localhost:8080/")
+	fmt.Println("running on http://localhost:8080/get")
+	fmt.Println("running on http://localhost:8080/getOne/1")
+	fmt.Println("running on http://localhost:8080/createOne")
+	fmt.Println("running on http://localhost:8080/updateOne/1")
+	fmt.Println("running on http://localhost:8080/deleteOne/1")
 
 	router := mux.NewRouter()
 	router.HandleFunc("/", home).Methods("GET")
 	router.HandleFunc("/get", getAllRecords).Methods("GET")
+	// swagger:route GET /getOne/{id} getOneRecord
+	//
+	// It returns one record.
+	//
+	//     Consumes:
+	//     - application/json
+	//
+	//     Produces:
+	//     - application/json
+	//
+	//     Schemes: http, https, ws, wss
+	//
+	//     Parameters:
+	//       + name: id
+	//         in: path
+	//         description: returns one record
+	//         required: true
+	//         type: integer
+	//         format: int
+	//
+	//     Responses:
+	//       200:
+	//			description: OK
+	//		 	  headers:
+	//				Idheader:
+	//				type: int
+	//				description: "Data Header table"
+	//       422:
+	//				description: "Error 422"
 	router.HandleFunc("/getOne/{id}", getOneRecord).Methods("GET")
 	router.HandleFunc("/createOne", createOneRecord).Methods("POST")
 	router.HandleFunc("/updateOne/{id}", updateOneRecord).Methods("PUT")
 	router.HandleFunc("/deleteOne/{id}", deleteOneRecord).Methods("DELETE")
-
-	//http://localhost:4000/
-	fmt.Println("running on http://localhost:8080/")
-	fmt.Println("running on http://localhost:8080/get")
-	fmt.Println("running on http://localhost:8080/getOne/1")
-	fmt.Println("runing on http://localhost:8080/createOne")
-	fmt.Println("running on http://localhost:8080/updateOne/1")
-	fmt.Println("running on http://localhost:8080/deleteOne/1")
 
 	handler := cors.Default().Handler(router)
 	log.Fatal(http.ListenAndServe(":8080", handler))
@@ -74,7 +101,6 @@ func getAllRecords(w http.ResponseWriter, r *http.Request) {
 func getOneRecord(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("get one record")
 	w.Header().Set("content-type", "application/json")
-
 	params_value := mux.Vars(r)
 	fmt.Println("params in url", params_value)
 
@@ -93,7 +119,6 @@ func getOneRecord(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	json.NewEncoder(w).Encode("No record found by this id")
-
 }
 
 var headers = []Header{}
