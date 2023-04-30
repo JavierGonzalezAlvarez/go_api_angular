@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"reflect"
@@ -18,21 +19,30 @@ type Header struct {
 	Companyname   string    `json:"companyname"`
 	Address       string    `json:"address"`
 	NumberInvoice int       `json:"numberinvoice"`
-	DateTime      time.Time `json:"datetime"`
+	DateTime      time.Time `json:"datetime" format:"2006-01-02 15:04:05"`
 	CreatedAt     time.Time `json:"createdat"`
 }
 
 type Detail struct {
 	IdDetail    int       `json:"detailid"`
-	IdHeader    *Header   `json:"idheader"`
+	IdHeader    int       `json:"idheader"`
 	Description string    `json:"description"`
 	Units       int       `json:"units"`
 	Price       float32   `json:"price"`
 	CreatedAt   time.Time `json:"createdat"`
 }
 
+type Invoice struct {
+	Header
+	Iddetail []Detail `json:"iddetail"`
+}
+
 // middleware, validation
-func (h *Header) IsEmpty() bool {
+func (h *Header) IsEmptyCompanyName() bool {
+	return h.Companyname == ""
+}
+
+func (h *Invoice) IsEmptyCompanyName() bool {
 	return h.Companyname == ""
 }
 
@@ -41,9 +51,11 @@ func main() {
 	fmt.Println("running on http://localhost:8080/")
 	fmt.Println("running on http://localhost:8080/get")
 	fmt.Println("running on http://localhost:8080/getOne/1")
-	fmt.Println("running on http://localhost:8080/createOne")
+	fmt.Println("running on http://localhost:8080/createOneHeader")
 	fmt.Println("running on http://localhost:8080/updateOne/1")
 	fmt.Println("running on http://localhost:8080/deleteOne/1")
+
+	fmt.Println("running on http://localhost:8080/createOneInvoice")
 
 	router := mux.NewRouter()
 	router.HandleFunc("/", home).Methods("GET")
@@ -78,9 +90,11 @@ func main() {
 	//       422:
 	//				description: "Error 422"
 	router.HandleFunc("/getOne/{id}", getOneRecord).Methods("GET")
-	router.HandleFunc("/createOne", createOneRecord).Methods("POST")
+	router.HandleFunc("/createOneHeader", createOneRecordHeader).Methods("POST")
 	router.HandleFunc("/updateOne/{id}", updateOneRecord).Methods("PUT")
 	router.HandleFunc("/deleteOne/{id}", deleteOneRecord).Methods("DELETE")
+
+	router.HandleFunc("/createOneInvoice", createOneRecordInvoice).Methods("POST")
 
 	handler := cors.Default().Handler(router)
 	log.Fatal(http.ListenAndServe(":8080", handler))
@@ -123,8 +137,8 @@ func getOneRecord(w http.ResponseWriter, r *http.Request) {
 
 var headers = []Header{}
 
-func createOneRecord(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("create a new record")
+func createOneRecordHeader(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("create a new record header")
 	w.Header().Set("content-type", "application/json")
 
 	//check if data is empty
@@ -134,8 +148,8 @@ func createOneRecord(w http.ResponseWriter, r *http.Request) {
 	println(r.Body)
 	var header Header
 	_ = json.NewDecoder(r.Body).Decode(&header)
-	if header.IsEmpty() {
-		json.NewEncoder(w).Encode("Pls send some data")
+	if header.IsEmptyCompanyName() {
+		json.NewEncoder(w).Encode("Pls revise data copany name is empty")
 		return
 	}
 
@@ -158,8 +172,8 @@ func updateOneRecord(w http.ResponseWriter, r *http.Request) {
 	// check if required data is empty
 	var headerRequire Header
 	_ = json.NewDecoder(r.Body).Decode(&headerRequire)
-	if headerRequire.IsEmpty() {
-		json.NewEncoder(w).Encode("Pls send some data")
+	if headerRequire.IsEmptyCompanyName() {
+		json.NewEncoder(w).Encode("Pls revise copany name is empty")
 		return
 	}
 
@@ -223,4 +237,29 @@ func deleteOneRecord(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode("No record found by this id")
 	return
+}
+
+var invoices = []Invoice{}
+
+func createOneRecordInvoice(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("create a new invoice")
+	w.Header().Set("content-type", "application/json")
+
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Error reading request body", http.StatusBadRequest)
+		fmt.Fprintf(w, "Received body: %s", string(body))
+		return
+	}
+	defer r.Body.Close()
+
+	if json.Valid(body) {
+		println("created a valid json")
+		fmt.Fprintf(w, "Received body: %s", string(body))
+		fmt.Println("response body:", string(body))
+		insert_invoice_sql(body)
+		return
+	} else {
+		http.Error(w, "Error, empty data", http.StatusBadRequest)
+	}
 }

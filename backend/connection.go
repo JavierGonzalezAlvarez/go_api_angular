@@ -2,14 +2,9 @@ package main
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
-	"log"
 	"os"
-	"reflect"
-	"time"
 
-	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
 
@@ -22,15 +17,6 @@ const (
 	dbname   = "invoices"
 )
 */
-
-type HeaderPostgres struct {
-	Idheader      int       `json:"idheader"`
-	Companyname   string    `json:"companyname"`
-	Address       string    `json:"address"`
-	NumberInvoice int       `json:"numberinvoice"`
-	DateTime      time.Time `json:"datetime"`
-	CreatedAt     time.Time `json:"createdat"`
-}
 
 func connexion() *sql.DB {
 	fmt.Println("connect to psql")
@@ -50,184 +36,4 @@ func connexion() *sql.DB {
 	}
 	//defer db.Close()
 	return db
-}
-
-func q_sql() []HeaderPostgres {
-	fmt.Println("sql to psql")
-
-	err := godotenv.Load("./env/env")
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
-	/*
-		for _, e := range os.Environ() {
-			pair := strings.SplitN(e, "=", 2)
-			fmt.Printf("%s: %s\n", pair[0], pair[1])
-		}
-		fmt.Println("user", os.Getenv("USER"))
-	*/
-
-	var db = connexion()
-	err = db.Ping()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("Successfully connected!")
-	defer db.Close()
-
-	//query
-	rows, err := db.Query(`SELECT * FROM "header"`)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
-
-	fmt.Println("list of records")
-	fmt.Println("---------------")
-	var result = []HeaderPostgres{}
-	for rows.Next() {
-		var item HeaderPostgres
-		rows.Scan(&item.Idheader, &item.Companyname, &item.Address, &item.NumberInvoice, &item.DateTime, &item.CreatedAt)
-		result = append(result, item)
-		fmt.Println("result: ", result)
-	}
-	return result
-}
-
-func q_sql_one(id int) []HeaderPostgres {
-	fmt.Println("sql to psql")
-
-	err := godotenv.Load("./env/env")
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
-	var db = connexion()
-	err = db.Ping()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("Successfully connected!")
-	defer db.Close()
-
-	rows, err := db.Query("select * from header where id_header = $1", id)
-	//rows, err := db.Query(`SELECT * FROM header WHERE id_header = $1`, id)
-	if err != nil {
-		log.Fatal(err)
-	} else {
-		fmt.Println("\nRow selected successfully!")
-	}
-	defer rows.Close()
-
-	var result = []HeaderPostgres{}
-	for rows.Next() {
-		var item HeaderPostgres
-		rows.Scan(&item.Idheader, &item.Companyname, &item.Address, &item.NumberInvoice, &item.DateTime, &item.CreatedAt)
-		result = append(result, item)
-		fmt.Println("result: ", result)
-	}
-	return result
-}
-
-func insert_sql(dataPost []uint8) {
-	fmt.Println("insert sql")
-
-	err := godotenv.Load("./env/env")
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
-	var db = connexion()
-	err = db.Ping()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("Successfully connected!")
-	defer db.Close()
-	fmt.Println("json from api post", string(dataPost))
-
-	// decode structure data: from json to struct
-	var InsertJson HeaderPostgres
-	json.Unmarshal([]byte(dataPost), &InsertJson)
-	fmt.Println("type of InsertJson = ", reflect.TypeOf(InsertJson))
-	fmt.Printf("Id Header: %v, Company Name %s \n", InsertJson.Idheader, InsertJson.Companyname)
-
-	//insert in postgres
-	sqlStatement := `INSERT INTO header (companyname) VALUES ($1)`
-	_, err = db.Exec(sqlStatement, InsertJson.Companyname)
-	if err != nil {
-		log.Fatal(err)
-	} else {
-		fmt.Println("\nRow inserted successfully!")
-	}
-	return
-}
-
-func update_sql(dataPost []uint8) {
-	fmt.Println("update sql")
-
-	err := godotenv.Load("./env/env")
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-	var db = connexion()
-	err = db.Ping()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("Successfully connected!")
-	defer db.Close()
-	fmt.Println("json from api post", string(dataPost))
-
-	// decode structure data: from json to struct
-	var UpdateJson HeaderPostgres
-	json.Unmarshal([]byte(dataPost), &UpdateJson)
-	fmt.Println("type of InsertJson = ", reflect.TypeOf(UpdateJson))
-	fmt.Printf("Id Header: %v, Company Name %s \n", UpdateJson.Idheader, UpdateJson.Companyname)
-
-	//update in postgres
-	rows, err := db.Query("UPDATE header SET companyname = $2 WHERE id_header = $1", UpdateJson.Idheader, UpdateJson.Companyname)
-	if err != nil {
-		log.Fatal(err)
-	} else {
-		fmt.Println("\nRow updates successfully!")
-	}
-	defer rows.Close()
-	return
-}
-
-func delete_sql_one(id int) {
-	fmt.Println("delete sql")
-
-	err := godotenv.Load("./env/env")
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
-	var db = connexion()
-	err = db.Ping()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("Successfully connected!")
-	defer db.Close()
-
-	rows, err := db.Query("delete from header where id_header = $1", id)
-	//rows, err := db.Query(`SELECT * FROM header WHERE id_header = $1`, id)
-	if err != nil {
-		log.Fatal(err)
-	} else {
-		fmt.Println("\nRow deletes successfully!")
-	}
-	defer rows.Close()
-
-	//var result = []HeaderPostgres{}
-	//for rows.Next() {
-	//	var item HeaderPostgres
-	//	rows.Scan(&item.Idheader, &item.Companyname, &item.Address, &item.NumberInvoice, &item.DateTime, &item.CreatedAt)
-	//	result = append(result, item)
-	//	fmt.Println("result: ", result)
-	//}
-
 }

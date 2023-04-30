@@ -3,8 +3,8 @@ doc: https://go.dev/doc/database/querying#multiple_rows
 
 ## create/compile file
 * $ go mod init psql
-* $ go build connection.go api.go // $ go build *.go
-* $ go run connection.go api.go // $ go run *.go
+* $ go build connection.go api.go sql.go // $ go build *.go
+* $ go run connection.go api.go sql.go // $ go run *.go
 
 * CREATE DATABASE invoices WITH OWNER test;
 
@@ -42,3 +42,38 @@ http://localhost:4000/updateOne/1
 * method: delete
 http://localhost:4000/deleteOne/6
 
+
+-Post header:
+{
+    "companyname": "test2",
+    "address": "stqw 12ole",
+    "numberinvoice": 234,
+    "datetime": "2023-04-30T15:14:06Z",
+    "createdat": "2023-04-30T15:14:06Z"
+}
+
+-Post Invoice:
+{
+    "companyname": "nananan",
+    "address": "stqw 1212 ole",
+    "numberinvoice": 342,
+    "datetime": "2023-04-30T15:14:06Z",
+    "createdat": "2023-01-02T15:04:05Z",
+    "iddetail": [{
+            "detailid": 0,
+            "idheader": 0,
+            "description": "description1_detail1",
+            "units": 2,
+            "price": 12.4,
+            "createdat": "2023-12-02T15:04:05Z"
+        },
+        {
+            "detailid": 0,
+            "idheader": 0,
+            "description": "description2_detail1",
+            "units": 21,
+            "price": 212.4,
+            "createdat": "2023-08-22T15:04:05Z"
+        }
+    ]
+}
