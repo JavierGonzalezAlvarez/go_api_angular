@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 //interface
 import { Invoices, serverResponse } from '../interfaces/invoices';
@@ -20,12 +20,23 @@ export class ServiceService {
   //  return this.http.get<Invoices[]>(this.urlBackend + 'get', {observe: 'response'});
   //}
 
+
   public getAll(limitOfResults=3): Observable<serverResponse["invoices"]> {
     return this.http.get<serverResponse["invoices"]>(this.urlBackend + 'get', {
       params: {
         limit: limitOfResults.toString()
       }
     });
+  }
+
+  //loaded data form the front
+  public loadPage(page: number): Observable<serverResponse["invoices"]> {
+    return this.http.get<serverResponse["invoices"]>(this.urlBackend + 'get', {
+      params: {
+        page: page
+      }
+    })
+    .pipe(map( response => response));
   }
 
 }

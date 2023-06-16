@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 
 import { Invoices, serverResponse } from 'src/app/interfaces/invoices';
 import { ServiceService } from '../service.service';
+import { filter, pipe } from 'rxjs';
 
 import {DataSource} from '@angular/cdk/collections';
 import {Observable, ReplaySubject} from 'rxjs';
@@ -39,6 +40,8 @@ export class ListInvoicesComponent implements OnInit {
   
   displayedColumns: string[] = ['idheader', 'company', 'address', 'numberinvoice', 'datatime', 'createdat'];
      
+  public currentPage: number = 1;
+
   constructor(private listService: ServiceService) {
     this.invoices_child = [];
   }
@@ -52,16 +55,38 @@ export class ListInvoicesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadData();
+    this.loadPage(this.currentPage);
   }
   
-  loadData() {
+  /*
+  loadData( page: number ) {
     this.listService.getAll().subscribe((invs: serverResponse["invoices"]) => {
       this.invoices_child = invs;
       console.log("invoices: ", this.invoices_child)   
     });  
   }
-  
+ */
+
+  loadPage( page: number ) {
+    this.listService.loadPage( page )
+      .pipe(
+        filter( (invoices: any[]) => invoices.length > 0 )
+      )
+      .subscribe( invoices => {
+        console.log(invoices)
+        this.currentPage = page;
+        this.invoices_child = invoices
+      })
+  }
+
+  loadData() {
+    this.listService.getAll()
+      .subscribe((invs: serverResponse["invoices"]) => {
+        this.invoices_child = invs;
+        console.log("invoices: ", this.invoices_child)   
+    }); 
+  }
+
    /*
   loadData() {
     this.listService.getAll().subscribe((inv: Invoices[]) => {

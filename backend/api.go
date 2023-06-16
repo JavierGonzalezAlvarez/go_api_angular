@@ -34,7 +34,7 @@ type Detail struct {
 
 type Invoice struct {
 	Header
-	Iddetail []Detail `json:"iddetail"`
+	Iddetail []Detail `json:"iddetail" `
 }
 
 // middleware, validation

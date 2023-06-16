@@ -42,6 +42,12 @@
                 class="list_invoices-button">
               Delete invoice
             </button>
+            <button  
+                mat-raised-button
+                (click)="loadPage( currentPage + 1 )"
+                class="list_invoices-button">
+                Cargar más - Página ({{ currentPage }})
+            </button>
           </div>        
 
           <table mat-table [dataSource]="invoices_child" class="mat-elevation-z8 table_list_invoices">
