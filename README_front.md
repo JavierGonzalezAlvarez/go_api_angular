@@ -36,7 +36,7 @@ path: frontend
 * $ npx ng g component components/seguridad/login --skip-tests=true
 * $ npx ng g component components/seguridad/register --skip-tests=true
 
-* $ npx ng g s components/seguridad/service
+* $ npx ng g s components/seguridad/seguridad
 * $ npx ng g s components/seguridad/seguridad-interceptor
 
 * $ npx ng g s list/service
@@ -44,3 +44,11 @@ path: frontend
 ## interfaces
 * $ npx ng g interface interfaces/seguridad
 * $ npx ng g interface interfaces/invoices
+
+## authorized user
+* $ npx ng g component components/seguridad/autorizado --skip-tests=true
+
+* $ create components/register/seguridad.ts
+
+* $ npx ng g component components/utils/validators
+* $ npx ng g component components/seguridad/formulario-autenticacion --skip-tests=true
