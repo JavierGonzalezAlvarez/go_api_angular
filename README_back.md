@@ -1,10 +1,28 @@
 # api in go and angular 15
 doc: https://go.dev/doc/database/querying#multiple_rows
 
-## create/compile file
-* $ go mod init psql
-* $ go build connection.go api.go sql.go // $ go build *.go
-* $ go run connection.go api.go sql.go // $ go run *.go
+## create folder and modules
+* $ go mod init packages
+* $ go mod tidy
+
+[...]
+
+# create and add modules to a workspace
+path: backend
+go clean -modcache
+
+go work init api
+go work use ./sql
+go work use ./connection
+go work use ./swagger
+
+go work use ...
+
+
+# compile compile file
+* $ go work build
+* $ go build connection.go api.go sql.go swagger.go // $ go build *.go
+* $ go run connection.go api.go sql.go swagger.go// $ go run *.go
 
 * CREATE DATABASE invoices WITH OWNER test;
 
@@ -14,6 +32,7 @@ doc: https://go.dev/doc/database/querying#multiple_rows
 * $ go get github.com/joho/godotenv
 * $ go get github.com/rs/cors
 * $ go get -u github.com/go-swagger/go-swagger/cmd/swagger
+
 
 ## docs
 https://goswagger.io/
