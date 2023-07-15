@@ -56,7 +56,12 @@ func main() {
 	fmt.Println("running on http://localhost:8080/deleteOne/1")
 	fmt.Println("running on http://localhost:8080/createOneInvoice")
 
+	fmt.Println("running on http://localhost:8080/getUsers")
+
 	router := mux.NewRouter()
+
+	router.HandleFunc("/getUsers", getAllUsers).Methods("GET")
+
 	router.HandleFunc("/", home).Methods("GET")
 	router.HandleFunc("/get", getAllRecords).Methods("GET")
 	// swagger:route GET /getOne/{id} getOneRecord
@@ -99,11 +104,18 @@ func main() {
 	log.Fatal(http.ListenAndServe(":8080", handler))
 }
 
-func home(w http.ResponseWriter, r *http.Request) {
+func home(w http.ResponseWriter, _ *http.Request) {
 	w.Write([]byte("<h1>api go & postgres & angular 15</h1>"))
 }
 
-func getAllRecords(w http.ResponseWriter, r *http.Request) {
+func getAllUsers(w http.ResponseWriter, _ *http.Request) {
+	fmt.Println("get all users")
+	var data = get_all_users()
+	w.Header().Set("content-type", "application/json")
+	json.NewEncoder(w).Encode(data)
+}
+
+func getAllRecords(w http.ResponseWriter, _ *http.Request) {
 	fmt.Println("get all records")
 	// retrieve data from postgres
 	var data = q_sql()

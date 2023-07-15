@@ -12,17 +12,13 @@ path: backend
 go clean -modcache
 
 go work init api
-go work use ./sql
-go work use ./connection
-go work use ./swagger
-
-go work use ...
+go work use ./go_api_postgres/backend
 
 
 # compile compile file
-* $ go work build
-* $ go build connection.go api.go sql.go swagger.go // $ go build *.go
-* $ go run connection.go api.go sql.go swagger.go// $ go run *.go
+* $ go work build -> just for my workspace
+* $ go build *.go
+* $ go run *.go
 
 * CREATE DATABASE invoices WITH OWNER test;
 
