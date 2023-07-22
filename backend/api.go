@@ -14,6 +14,14 @@ import (
 	"github.com/rs/cors"
 )
 
+type User struct {
+	Iduser   int    `json:"iduser"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	//Token     string    `json:"token"`
+	CreatedAt time.Time `json:"createdat"`
+}
+
 type Header struct {
 	Idheader      int       `json:"idheader"`
 	Companyname   string    `json:"companyname"`
@@ -46,6 +54,10 @@ func (h *Invoice) IsEmptyCompanyName() bool {
 	return h.Companyname == ""
 }
 
+func (h *User) IsEmptyEmail() bool {
+	return h.Email == ""
+}
+
 func main() {
 	fmt.Println("back api")
 	fmt.Println("running on http://localhost:8080/")
@@ -57,10 +69,9 @@ func main() {
 	fmt.Println("running on http://localhost:8080/createOneInvoice")
 
 	fmt.Println("running on http://localhost:8080/getUsers")
+	fmt.Println("running on http://localhost:8080/createOneUser")
 
 	router := mux.NewRouter()
-
-	router.HandleFunc("/getUsers", getAllUsers).Methods("GET")
 
 	router.HandleFunc("/", home).Methods("GET")
 	router.HandleFunc("/get", getAllRecords).Methods("GET")
@@ -97,8 +108,10 @@ func main() {
 	router.HandleFunc("/createOneHeader", createOneRecordHeader).Methods("POST")
 	router.HandleFunc("/updateOne/{id}", updateOneRecord).Methods("PUT")
 	router.HandleFunc("/deleteOne/{id}", deleteOneRecord).Methods("DELETE")
-
 	router.HandleFunc("/createOneInvoice", createOneRecordInvoice).Methods("POST")
+
+	router.HandleFunc("/getUsers", getAllUsers).Methods("GET")
+	router.HandleFunc("/createOneUser", createOneUser).Methods("POST")
 
 	handler := cors.Default().Handler(router)
 	log.Fatal(http.ListenAndServe(":8080", handler))
@@ -113,6 +126,39 @@ func getAllUsers(w http.ResponseWriter, _ *http.Request) {
 	var data = get_all_users()
 	w.Header().Set("content-type", "application/json")
 	json.NewEncoder(w).Encode(data)
+}
+
+var users = []User{}
+
+func createOneUser(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("create one user with token")
+	var data = get_all_users()
+	w.Header().Set("content-type", "application/json")
+	json.NewEncoder(w).Encode(data)
+
+	//check if data is empty
+	if r.Body == nil {
+		json.NewEncoder(w).Encode("Pls send some data or validate data sent")
+	}
+	println(r.Body)
+
+	var user User
+	_ = json.NewDecoder(r.Body).Decode(&user)
+	if user.IsEmptyEmail() {
+		json.NewEncoder(w).Encode("Pls revise data, email is empty")
+		return
+	}
+
+	users = append(users, user)
+	//response (200)
+	json.NewEncoder(w).Encode(user)
+	//print json
+	finalJson, _ := json.MarshalIndent(user, "", "\t")
+	fmt.Println("final response json indented", string(finalJson))
+	fmt.Println("type of json = ", reflect.TypeOf(finalJson))
+
+	insert_user_sql(finalJson)
+	return
 }
 
 func getAllRecords(w http.ResponseWriter, _ *http.Request) {
@@ -160,7 +206,7 @@ func createOneRecordHeader(w http.ResponseWriter, r *http.Request) {
 	var header Header
 	_ = json.NewDecoder(r.Body).Decode(&header)
 	if header.IsEmptyCompanyName() {
-		json.NewEncoder(w).Encode("Pls revise data copany name is empty")
+		json.NewEncoder(w).Encode("Pls revise data company name is empty")
 		return
 	}
 
@@ -172,7 +218,7 @@ func createOneRecordHeader(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("final response json indented", string(finalJson))
 	fmt.Println("type of json = ", reflect.TypeOf(finalJson))
 
-	insert_sql(finalJson)
+	insert_header_sql(finalJson)
 	return
 }
 

@@ -28,7 +28,7 @@ go work use ./go_api_postgres/backend
 * $ go get github.com/joho/godotenv
 * $ go get github.com/rs/cors
 * $ go get -u github.com/go-swagger/go-swagger/cmd/swagger
-
+* $ go get -u github.com/golang-jwt/jwt/v5
 
 ## docs
 https://goswagger.io/

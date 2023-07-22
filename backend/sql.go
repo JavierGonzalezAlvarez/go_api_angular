@@ -7,14 +7,17 @@ import (
 	"reflect"
 	"time"
 
+	"github.com/golang-jwt/jwt"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
 
 type Users struct {
-	Iduser   *int    `json:"iduser"`
-	Username *string `json:"username"`
-	Email    *string `json:"email"`
+	Iduser    *int      `json:"iduser"`
+	Username  *string   `json:"username"`
+	Email     *string   `json:"email"`
+	Token     *string   `json:"token"`
+	CreatedAt time.Time `json:"createdat"`
 }
 
 type HeaderPostgres struct {
@@ -153,8 +156,46 @@ func q_sql_one(id int) []HeaderPostgres {
 	return result
 }
 
-func insert_sql(dataPost []uint8) {
-	fmt.Println("insert hader sql")
+func create_token(dataPost []uint8) string {
+	// Define the expiration time for the token
+	expirationTime := time.Now().Add(24 * time.Hour)
+
+	var InsertJson Users
+	json.Unmarshal([]byte(dataPost), &InsertJson)
+
+	user := User{
+		Username: *InsertJson.Username,
+		Email:    *InsertJson.Email,
+	}
+
+	// Create the claims containing the user information
+	claims := jwt.MapClaims{
+		//"id":       user.ID,
+		"username": user.Username,
+		"email":    user.Email,
+		"exp":      expirationTime.Unix(),
+	}
+
+	// Create the JWT token with the claims
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	// Define the secret key used for signing the token
+	// Note: Keep the key secure and do not hardcode it in your code
+	secretKey := []byte("your-secret-key")
+
+	// Sign the token with the secret key
+	signedToken, err := token.SignedString(secretKey)
+	if err != nil {
+		fmt.Println("Error signing token:", err)
+		return "error"
+	}
+
+	return signedToken
+
+}
+
+func insert_user_sql(dataPost []uint8) {
+	fmt.Println("insert user sql with token")
 
 	err := godotenv.Load("./env/env")
 	if err != nil {
@@ -166,6 +207,45 @@ func insert_sql(dataPost []uint8) {
 	if err != nil {
 		panic(err)
 	}
+
+	fmt.Println("Successfully connected!")
+	defer db.Close()
+	fmt.Println("json from api post", string(dataPost))
+
+	// decode structure data: from json to struct
+	var InsertJson Users
+	json.Unmarshal([]byte(dataPost), &InsertJson)
+
+	// create token for user
+	signedToken := create_token(dataPost)
+	myTime := time.Now()
+
+	//insert in postgres
+	sqlStatement := `INSERT INTO usuario (username, email, token, created_at) VALUES ($1, $2, $3, $4)`
+	_, err = db.Exec(sqlStatement, InsertJson.Username, InsertJson.Email, signedToken, myTime)
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		fmt.Println("\nRow inserted successfully!, token: ", signedToken)
+	}
+	return
+
+}
+
+func insert_header_sql(dataPost []uint8) {
+	fmt.Println("insert header sql")
+
+	err := godotenv.Load("./env/env")
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	var db = connexion()
+	err = db.Ping()
+	if err != nil {
+		panic(err)
+	}
+
 	fmt.Println("Successfully connected!")
 	defer db.Close()
 	fmt.Println("json from api post", string(dataPost))
