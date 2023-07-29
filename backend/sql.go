@@ -15,6 +15,7 @@ import (
 type Users struct {
 	Iduser    *int      `json:"iduser"`
 	Username  *string   `json:"username"`
+	Password  *string   `json:"password"`
 	Email     *string   `json:"email"`
 	Token     *string   `json:"token"`
 	CreatedAt time.Time `json:"createdat"`
@@ -74,7 +75,7 @@ func get_all_users() []Users {
 		rows.Scan(&item.Iduser, &item.Username, &item.Email)
 		result = append(result, item)
 	}
-	fmt.Println("result: ", result)
+	//fmt.Println("result: ", result)
 	return result
 }
 
@@ -119,6 +120,39 @@ func q_sql() []HeaderPostgres {
 	}
 	fmt.Println("result: ", result)
 	return result
+}
+
+func find_email(email string) string {
+	fmt.Println("looking for an email in db  :", email)
+	err := godotenv.Load("./env/env")
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	var db = connexion()
+	err = db.Ping()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Successfully connected!")
+	defer db.Close()
+
+	rows, err := db.Query("select email from usuario where email = $1", email)
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		fmt.Println("\nRow (email) selected successfully!")
+	}
+	defer rows.Close()
+
+	var result_email string
+	for rows.Next() {
+		var item Users
+		rows.Scan(&item.Email)
+		result_email = *item.Email
+	}
+	return result_email
+
 }
 
 func q_sql_one(id int) []HeaderPostgres {
@@ -221,8 +255,8 @@ func insert_user_sql(dataPost []uint8) {
 	myTime := time.Now()
 
 	//insert in postgres
-	sqlStatement := `INSERT INTO usuario (username, email, token, created_at) VALUES ($1, $2, $3, $4)`
-	_, err = db.Exec(sqlStatement, InsertJson.Username, InsertJson.Email, signedToken, myTime)
+	sqlStatement := `INSERT INTO usuario (username, password, email, token, created_at) VALUES ($1, $2, $3, $4, $5)`
+	_, err = db.Exec(sqlStatement, InsertJson.Username, InsertJson.Password, InsertJson.Email, signedToken, myTime)
 	if err != nil {
 		log.Fatal(err)
 	} else {

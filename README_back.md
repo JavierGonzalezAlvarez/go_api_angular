@@ -57,6 +57,8 @@ http://localhost:4000/updateOne/1
 * method: delete
 http://localhost:4000/deleteOne/6
 
+* method: post
+http://localhost:8080/createOneInvoice
 
 -Post header:
 {
@@ -91,4 +93,13 @@ http://localhost:4000/deleteOne/6
             "createdat": "2023-08-22T15:04:05Z"
         }
     ]
+}
+
+* method post
+http://localhost:8080/createOneUser
+
+{
+    "username": "jjg",
+    "password": "1234",
+    "email": "email@gmail.com"
 }

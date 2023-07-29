@@ -17,6 +17,7 @@ import (
 type User struct {
 	Iduser   int    `json:"iduser"`
 	Username string `json:"username"`
+	Password string `json:"password"`
 	Email    string `json:"email"`
 	//Token     string    `json:"token"`
 	CreatedAt time.Time `json:"createdat"`
@@ -139,6 +140,7 @@ func createOneUser(w http.ResponseWriter, r *http.Request) {
 	//check if data is empty
 	if r.Body == nil {
 		json.NewEncoder(w).Encode("Pls send some data or validate data sent")
+		return
 	}
 	println(r.Body)
 
@@ -146,6 +148,16 @@ func createOneUser(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewDecoder(r.Body).Decode(&user)
 	if user.IsEmptyEmail() {
 		json.NewEncoder(w).Encode("Pls revise data, email is empty")
+		return
+	}
+
+	//check if email exists already, search email in db
+	email := find_email(user.Email)
+
+	//get email from data
+	if user.Email == email {
+		json.NewEncoder(w).Encode("Email already exists")
+		fmt.Println("Email already exists:", user.Email)
 		return
 	}
 

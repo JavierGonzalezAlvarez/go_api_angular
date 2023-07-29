@@ -38,3 +38,5 @@ create table usuario (
 );
 
 ALTER TABLE usuario ADD COLUMN token VARCHAR(255);
+
+ALTER TABLE usuario ADD COLUMN password VARCHAR(255);
