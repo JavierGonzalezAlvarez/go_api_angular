@@ -14,7 +14,8 @@
 
     <app-autorizado>
       <ng-container autorizado>
-        <span>Hola, {{seguridadService.getFieldJWT('email')}}</span>
+        <!--<span>Hola, {{seguridadService.getFieldJWT('email')}}</span>-->
+        <span>Hola, {{seguridadService.getFieldJWT('username')}}</span>
         <a mat-button (click)="seguridadService.logout()">Logout</a>
 
       </ng-container>

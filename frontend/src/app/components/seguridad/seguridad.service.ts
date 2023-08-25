@@ -73,6 +73,7 @@ export class SeguridadService {
     localStorage.setItem(this.llaveExpiracion, respuestaAutenticacion.expiracion.toString());
   }
 
+  // get field to show in Menu
   getFieldJWT(campo: string): string {
     const token = localStorage.getItem(this.llaveToken);
     if (!token) { return ''; }

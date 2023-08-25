@@ -46,6 +46,17 @@ type Invoice struct {
 	Iddetail []Detail `json:"iddetail" `
 }
 
+type Credentials struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type Response struct {
+	Token      string    `json:"token"`
+	Expiracion time.Time `json:"expiracion"`
+	User       string    `json:"username"`
+}
+
 // middleware, validation
 func (h *Header) IsEmptyCompanyName() bool {
 	return h.Companyname == ""
@@ -71,6 +82,8 @@ func main() {
 
 	fmt.Println("running on http://localhost:8080/getUsers")
 	fmt.Println("running on http://localhost:8080/createOneUser")
+
+	fmt.Println("running on http://localhost:8080/users/login")
 
 	router := mux.NewRouter()
 
@@ -114,12 +127,46 @@ func main() {
 	router.HandleFunc("/getUsers", getAllUsers).Methods("GET")
 	router.HandleFunc("/createOneUser", createOneUser).Methods("POST")
 
+	router.HandleFunc("/users/login", postUserLogin).Methods("POST")
+
 	handler := cors.Default().Handler(router)
 	log.Fatal(http.ListenAndServe(":8080", handler))
 }
 
 func home(w http.ResponseWriter, _ *http.Request) {
 	w.Write([]byte("<h1>api go & postgres & angular 15</h1>"))
+}
+
+func postUserLogin(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("getting login from Angular, return token and expiration token")
+	// Parse request body
+	var creds Credentials
+	if err := json.NewDecoder(r.Body).Decode(&creds); err != nil {
+		http.Error(w, "Invalid request", http.StatusBadRequest)
+		return
+	}
+
+	//TODO: get credentials from DB
+
+	// Create a response object
+	response := Response{
+		Token:      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVtYWlsQGdtYWlsLmNvbSIsImV4cCI6MTY5MDYzOTE1MCwidXNlcm5hbWUiOiJqamcifQ.tK-WL-EPsC2L-NQR9L_-TX29liERv4l2h5M2r4HUpCk",
+		Expiracion: time.Now(),
+		User:       "jjg",
+	}
+
+	// Convert the response object to JSON
+	jsonResponse, err := json.Marshal(response)
+	if err != nil {
+		http.Error(w, "Error creating JSON response", http.StatusInternalServerError)
+		return
+	}
+
+	// set the content type
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	// respond with JSON
+	w.Write(jsonResponse)
 }
 
 func getAllUsers(w http.ResponseWriter, _ *http.Request) {

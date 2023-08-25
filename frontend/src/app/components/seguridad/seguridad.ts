@@ -6,6 +6,7 @@ export interface userCredentials {
 export interface responseAuthentication {
   token: string;
   expiracion: Date;
+  user: string;
 }
 
 export interface user {
