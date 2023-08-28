@@ -51,12 +51,6 @@ type Credentials struct {
 	Password string `json:"password"`
 }
 
-type Response struct {
-	Token      string    `json:"token"`
-	Expiracion time.Time `json:"expiracion"`
-	User       string    `json:"username"`
-}
-
 // middleware, validation
 func (h *Header) IsEmptyCompanyName() bool {
 	return h.Companyname == ""
@@ -146,17 +140,23 @@ func postUserLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//TODO: get credentials from DB
+	//check in DB credentials
+	credentials := get_credentials(creds.Email, creds.Password)
+	if len(credentials) == 0 {
+		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+		return
+	}
 
 	// Create a response object
-	response := Response{
-		Token:      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVtYWlsQGdtYWlsLmNvbSIsImV4cCI6MTY5MDYzOTE1MCwidXNlcm5hbWUiOiJqamcifQ.tK-WL-EPsC2L-NQR9L_-TX29liERv4l2h5M2r4HUpCk",
+	response := credentials[0]
+	responses := Response{
+		Token:      response.Token,
 		Expiracion: time.Now(),
-		User:       "jjg",
+		User:       response.User,
 	}
 
 	// Convert the response object to JSON
-	jsonResponse, err := json.Marshal(response)
+	jsonResponse, err := json.Marshal(responses)
 	if err != nil {
 		http.Error(w, "Error creating JSON response", http.StatusInternalServerError)
 		return
@@ -165,7 +165,7 @@ func postUserLogin(w http.ResponseWriter, r *http.Request) {
 	// set the content type
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	// respond with JSON
+	// respond with JSON format
 	w.Write(jsonResponse)
 }
 

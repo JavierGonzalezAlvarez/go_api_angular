@@ -44,6 +44,12 @@ type InvoicePostgres struct {
 	Iddetail []Detail `json:"iddetail"`
 }
 
+type Response struct {
+	Token      string    `json:"token"`
+	Expiracion time.Time `json:"expiracion"`
+	User       string    `json:"username"`
+}
+
 func get_all_users() []Users {
 	fmt.Println("sql users")
 
@@ -155,6 +161,39 @@ func find_email(email string) string {
 
 }
 
+func get_credentials(email string, password string) []Response {
+	fmt.Println("looking for an email in db  :", email)
+	err := godotenv.Load("./env/env")
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	var db = connexion()
+	err = db.Ping()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Successfully connected!")
+	defer db.Close()
+
+	rows, err := db.Query("select username, token from usuario where email = $1 and password = $2", email, password)
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		fmt.Println("\nRow (email - password) selected successfully!")
+	}
+	defer rows.Close()
+
+	var result = []Response{}
+	for rows.Next() {
+		var item Response
+		rows.Scan(&item.User, &item.Token)
+		result = append(result, item)
+		fmt.Println("result: ", result)
+	}
+	return result
+}
+
 func q_sql_one(id int) []HeaderPostgres {
 	fmt.Println("sql to psql")
 
@@ -214,8 +253,7 @@ func create_token(dataPost []uint8) string {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	// Define the secret key used for signing the token
-	// Note: Keep the key secure and do not hardcode it in your code
-	secretKey := []byte("your-secret-key")
+	secretKey := []byte("ATTRSAOis98Aha87sNHY48725s45dLOQIJS")
 
 	// Sign the token with the secret key
 	signedToken, err := token.SignedString(secretKey)
@@ -429,7 +467,7 @@ func insert_invoice_sql(dataPost []uint8) {
 		fmt.Println("\nRow Header inserted successfully!")
 	}
 
-	//get last id_ehader inserted
+	//get last id_header inserted
 	var id_header int
 	err = db.QueryRow("SELECT id_header FROM header ORDER BY id_header DESC LIMIT 1").Scan(&id_header)
 	if err != nil {

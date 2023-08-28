@@ -52,3 +52,4 @@ path: frontend
 
 * $ npx ng g component components/utils/validators
 * $ npx ng g component components/seguridad/formulario-autenticacion --skip-tests=true
+

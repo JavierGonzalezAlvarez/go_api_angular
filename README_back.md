@@ -103,3 +103,11 @@ http://localhost:8080/createOneUser
     "password": "1234",
     "email": "email@gmail.com"
 }
+
+* method post
+http://localhost:8080/users/login
+
+{
+    "email": "email@gmail.com",
+    "password": "1234"
+}
