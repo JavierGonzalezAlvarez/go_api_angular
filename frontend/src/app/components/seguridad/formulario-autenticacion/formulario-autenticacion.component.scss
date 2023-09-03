@@ -1,36 +1,19 @@
 .form-container {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Optional: Center align the form horizontally */
-  justify-content: center; /* Optional: Center align the form vertically */
-  height: 100vh; /* Optional: Adjust the container height as needed */
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
 }
 
 .mat-form-field {
-  width: 100%; /* Make the form fields occupy the full width of the container */
-  max-width: 300px; /* Set a maximum width for the form fields if desired */
-  margin: 10px auto; /* Add some vertical spacing between form fields */
+  width: 300%;
+  max-width: 400px;
+  margin: 10px 0;
 }
 
-
-.mat-form-field {
-  font-size: 16px;
+.line-break {
+  height: 10px;
+  width: 100%;
 }
 
-.mat-label {
-  font-size: 18px;
-}
-
-.mat-error {
-  font-size: 14px;
-}
-
-.mat-flat-button,
-.mat-stroked-button {
-  font-size: 16px;
-}
-
-
-.form-container {
-  font-size: 16px;
-}

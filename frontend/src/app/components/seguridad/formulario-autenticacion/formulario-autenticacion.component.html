@@ -4,10 +4,12 @@
 
   <form (submit)="onSubmit.emit(form.value)" [formGroup]="form">
     <mat-form-field appearance="outline" *ngIf="accion !== 'Login'">
-      <mat-label>User</mat-label>
+      <mat-label>Username</mat-label>
       <input formControlName="username" maxlength="15" matInput/>
       <!--<mat-error>{{obtenerMensajeErrorUserName()}}</mat-error>-->
     </mat-form-field>
+
+    <div class="line-break"></div>
 
     <mat-form-field appearance="outline">
         <mat-label>Email</mat-label>
@@ -15,11 +17,15 @@
         <mat-error>{{obtenerMensajeErrorEmail()}}</mat-error>
     </mat-form-field>
 
+    <div class="line-break"></div>
+
     <mat-form-field appearance="outline">
         <mat-label>Password</mat-label>
         <input type="password" formControlName="password" matInput />
         <mat-error>El campo Password es requerido</mat-error>
     </mat-form-field>
+
+    <div class="line-break"></div>
 
     <div class="button-container">
         <button mat-flat-button color="primary" [disabled]="form.invalid">

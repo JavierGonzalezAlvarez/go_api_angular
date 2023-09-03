@@ -19,8 +19,7 @@ export class FormularioAutenticacionComponent implements OnInit {
   @Input()
   errores: string[] = [];
   @Input()
-  //accion!: string ="login";
-  accion: string = "login";
+  accion!: string;
   @Output()
 
   onSubmit: EventEmitter<userCredentials> = new EventEmitter<userCredentials>();
