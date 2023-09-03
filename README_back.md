@@ -9,10 +9,10 @@ doc: https://go.dev/doc/database/querying#multiple_rows
 
 # create and add modules to a workspace
 path: backend
-go clean -modcache
+- go clean -modcache
 
-go work init api
-go work use ./go_api_postgres/backend
+- go work init api
+- go work use ./go_api_postgres/backend
 
 
 # compile compile file
@@ -99,7 +99,7 @@ http://localhost:8080/createOneInvoice
 http://localhost:8080/createOneUser
 
 {
-    "username": "jjg",
+    #"username": "jjg",
     "password": "1234",
     "email": "email@gmail.com"
 }

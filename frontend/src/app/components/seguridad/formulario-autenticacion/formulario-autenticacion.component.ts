@@ -26,6 +26,7 @@ export class FormularioAutenticacionComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
+      username: ['', Validators.required],
       email: [
         '',
         {
@@ -55,4 +56,19 @@ export class FormularioAutenticacionComponent implements OnInit {
     return '';
   }
 
+  /*
+  obtenerMensajeErrorUserName() {
+    var campo = this.form.get('username');
+
+    if (campo && campo.hasError('required')) {
+      return 'El campo Name es requerido';
+    }
+
+    if (campo && campo.hasError('username')) {
+      return 'El name no es válido';
+    }
+
+    return '';
+  }
+  */
 }

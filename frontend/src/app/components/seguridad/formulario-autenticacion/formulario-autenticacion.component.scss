@@ -1,0 +1,40 @@
+.form-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.mat-form-field,
+.button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+
+.mat-form-field {
+  font-size: 16px;
+}
+
+.mat-label {
+  font-size: 18px;
+}
+
+.mat-error {
+  font-size: 14px;
+}
+
+.mat-flat-button,
+.mat-stroked-button {
+  font-size: 16px;
+}
+
+
+.form-container {
+  font-size: 16px;
+}

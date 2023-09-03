@@ -79,6 +79,7 @@ func get_all_users() []Users {
 	for rows.Next() {
 		var item Users
 		rows.Scan(&item.Iduser, &item.Username, &item.Email)
+		//rows.Scan(&item.Iduser, &item.Email)
 		result = append(result, item)
 	}
 	//fmt.Println("result: ", result)
@@ -291,10 +292,13 @@ func insert_user_sql(dataPost []uint8) {
 	// create token for user
 	signedToken := create_token(dataPost)
 	myTime := time.Now()
+	fmt.Println("datetime", myTime)
 
 	//insert in postgres
 	sqlStatement := `INSERT INTO usuario (username, password, email, token, created_at) VALUES ($1, $2, $3, $4, $5)`
 	_, err = db.Exec(sqlStatement, InsertJson.Username, InsertJson.Password, InsertJson.Email, signedToken, myTime)
+	//sqlStatement := `INSERT INTO usuario (password, email, token, created_at) VALUES ($1, $2, $3, $4)`
+	//_, err = db.Exec(sqlStatement, InsertJson.Password, InsertJson.Email, signedToken, myTime)
 	if err != nil {
 		log.Fatal(err)
 	} else {

@@ -1,28 +1,34 @@
 
-<h3>{{accion}}</h3>
-
+<div class="form-container">
+  <h3>{{accion}}</h3>
 
   <form (submit)="onSubmit.emit(form.value)" [formGroup]="form">
-      <mat-form-field appearance="outline">
-          <mat-label>Email</mat-label>
-          <input formControlName="email" matInput />
-          <mat-error>{{obtenerMensajeErrorEmail()}}</mat-error>
-      </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>User</mat-label>
+      <input formControlName="username" matInput />
+      <!--<mat-error>{{obtenerMensajeErrorUserName()}}</mat-error>-->
+    </mat-form-field>
 
-      <mat-form-field appearance="outline">
-          <mat-label>Password</mat-label>
-          <input type="password" formControlName="password" matInput />
-          <mat-error>El campo Password es requerido</mat-error>
-      </mat-form-field>
+    <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input formControlName="email" matInput />
+        <mat-error>{{obtenerMensajeErrorEmail()}}</mat-error>
+    </mat-form-field>
 
-      <div class="button-container">
-          <button mat-flat-button color="primary" [disabled]="form.invalid">
-              {{accion}}
-          </button>
-          <a mat-stroked-button routerLink="/">
-              Cancelar
-          </a>
-      </div>
+    <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input type="password" formControlName="password" matInput />
+        <mat-error>El campo Password es requerido</mat-error>
+    </mat-form-field>
+
+    <div class="button-container">
+        <button mat-flat-button color="primary" [disabled]="form.invalid">
+            {{accion}}
+        </button>
+        <a mat-stroked-button routerLink="/">
+            Cancelar
+        </a>
+     </div>
   </form>
-
+</div>
 

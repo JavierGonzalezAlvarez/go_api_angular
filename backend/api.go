@@ -15,11 +15,10 @@ import (
 )
 
 type User struct {
-	Iduser   int    `json:"iduser"`
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Email    string `json:"email"`
-	//Token     string    `json:"token"`
+	Iduser    int       `json:"iduser"`
+	Username  string    `json:"username"`
+	Password  string    `json:"password"`
+	Email     string    `json:"email"`
 	CreatedAt time.Time `json:"createdat"`
 }
 
@@ -119,7 +118,7 @@ func main() {
 	router.HandleFunc("/createOneInvoice", createOneRecordInvoice).Methods("POST")
 
 	router.HandleFunc("/getUsers", getAllUsers).Methods("GET")
-	router.HandleFunc("/createOneUser", createOneUser).Methods("POST")
+	router.HandleFunc("/users/createOneUser", createOneUser).Methods("POST")
 
 	router.HandleFunc("/users/login", postUserLogin).Methods("POST")
 

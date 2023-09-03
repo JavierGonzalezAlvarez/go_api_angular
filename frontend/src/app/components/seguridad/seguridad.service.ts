@@ -61,7 +61,7 @@ export class SeguridadService {
   }
 
   register(credenciales: userCredentials): Observable<responseAuthentication> {
-    return this.httpClient.post<responseAuthentication>(this.apiURL + '/create', credenciales);
+    return this.httpClient.post<responseAuthentication>(this.apiURL + '/createOneUser', credenciales);
   }
 
   login(credenciales: userCredentials): Observable<responseAuthentication> {
