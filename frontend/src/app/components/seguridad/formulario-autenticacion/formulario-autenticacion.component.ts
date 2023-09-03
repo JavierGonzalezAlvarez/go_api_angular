@@ -19,14 +19,17 @@ export class FormularioAutenticacionComponent implements OnInit {
   @Input()
   errores: string[] = [];
   @Input()
-  accion!: string;
+  //accion!: string ="login";
+  accion: string = "login";
   @Output()
 
   onSubmit: EventEmitter<userCredentials> = new EventEmitter<userCredentials>();
 
   ngOnInit(): void {
+    console.log(this.accion)
+
     this.form = this.formBuilder.group({
-      username: ['', Validators.required],
+      username: ['', Validators.maxLength],
       email: [
         '',
         {

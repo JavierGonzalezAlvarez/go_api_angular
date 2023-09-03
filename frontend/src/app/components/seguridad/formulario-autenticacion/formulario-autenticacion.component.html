@@ -3,15 +3,15 @@
   <h3>{{accion}}</h3>
 
   <form (submit)="onSubmit.emit(form.value)" [formGroup]="form">
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" *ngIf="accion !== 'Login'">
       <mat-label>User</mat-label>
-      <input formControlName="username" matInput />
+      <input formControlName="username" maxlength="15" matInput/>
       <!--<mat-error>{{obtenerMensajeErrorUserName()}}</mat-error>-->
     </mat-form-field>
 
     <mat-form-field appearance="outline">
         <mat-label>Email</mat-label>
-        <input formControlName="email" matInput />
+        <input formControlName="email" matInput/>
         <mat-error>{{obtenerMensajeErrorEmail()}}</mat-error>
     </mat-form-field>
 
