@@ -26,10 +26,12 @@ export class LoginComponent implements OnInit {
   login(credenciales: userCredentials) {
     this.seguridadService.login(credenciales)
       .subscribe(
-        respuesta => {
-          //this.seguridadService.saveToken(respuesta);
+        (respuesta: any) => {
+          console.log('Login successful');
+          console.log('API Response:', respuesta); // Log the API response
           this.router.navigate(['/']);
-      },
+        },
+
       errores => {
         this.handleAPIErrors(errores)
         console.log('API Errors:', this.errores)

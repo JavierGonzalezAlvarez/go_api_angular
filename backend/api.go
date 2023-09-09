@@ -119,7 +119,6 @@ func main() {
 
 	router.HandleFunc("/getUsers", getAllUsers).Methods("GET")
 	router.HandleFunc("/users/createOneUser", createOneUser).Methods("POST")
-
 	router.HandleFunc("/users/login", postUserLogin).Methods("POST")
 
 	handler := cors.Default().Handler(router)
@@ -131,7 +130,7 @@ func home(w http.ResponseWriter, _ *http.Request) {
 }
 
 func postUserLogin(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("getting login from Angular, return token and expiration token")
+	fmt.Println("login from Angular, return token and expiration token")
 	// Parse request body
 	var creds Credentials
 	if err := json.NewDecoder(r.Body).Decode(&creds); err != nil {
@@ -179,9 +178,9 @@ var users = []User{}
 
 func createOneUser(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("create one user with token")
-	var data = get_all_users()
-	w.Header().Set("content-type", "application/json")
-	json.NewEncoder(w).Encode(data)
+	//var data = get_all_users()
+	//w.Header().Set("content-type", "application/json")
+	//json.NewEncoder(w).Encode(data)
 
 	//check if data is empty
 	if r.Body == nil {
@@ -202,21 +201,34 @@ func createOneUser(w http.ResponseWriter, r *http.Request) {
 
 	//get email from data
 	if user.Email == email {
-		json.NewEncoder(w).Encode("Email already exists")
+		// return the error to the front
+		http.Error(w, "Email already exists", http.StatusNotFound)
 		fmt.Println("Email already exists:", user.Email)
 		return
 	}
+	// if response is ok and email dosn't exist
+	w.WriteHeader(http.StatusOK)
 
 	users = append(users, user)
-	//response (200)
-	json.NewEncoder(w).Encode(user)
-	//print json
-	finalJson, _ := json.MarshalIndent(user, "", "\t")
-	fmt.Println("final response json indented", string(finalJson))
-	fmt.Println("type of json = ", reflect.TypeOf(finalJson))
 
-	insert_user_sql(finalJson)
-	return
+	// Create JSON response
+	finalJson, _ := json.MarshalIndent(user, "", "\t")
+	jsonResponse := create_user_sql(finalJson)
+	jsonResponseBytes, err := json.Marshal(jsonResponse)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Set content type and status code
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+
+	// Write the JSON response to the client
+	if _, err := w.Write(jsonResponseBytes); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 func getAllRecords(w http.ResponseWriter, _ *http.Request) {

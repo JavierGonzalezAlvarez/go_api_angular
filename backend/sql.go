@@ -50,6 +50,10 @@ type Response struct {
 	User       string    `json:"username"`
 }
 
+type ResponseLogin struct {
+	Email string `json:"email"`
+}
+
 func get_all_users() []Users {
 	fmt.Println("sql users")
 
@@ -129,6 +133,7 @@ func q_sql() []HeaderPostgres {
 	return result
 }
 
+/*
 func find_email(email string) string {
 	fmt.Println("looking for an email in db  :", email)
 	err := godotenv.Load("./env/env")
@@ -161,7 +166,8 @@ func find_email(email string) string {
 	return result_email
 
 }
-
+*/
+/*
 func get_credentials(email string, password string) []Response {
 	fmt.Println("looking for an email in db  :", email)
 	err := godotenv.Load("./env/env")
@@ -194,6 +200,7 @@ func get_credentials(email string, password string) []Response {
 	}
 	return result
 }
+*/
 
 func q_sql_one(id int) []HeaderPostgres {
 	fmt.Println("sql to psql")
@@ -267,7 +274,7 @@ func create_token(dataPost []uint8) string {
 
 }
 
-func insert_user_sql(dataPost []uint8) {
+func create_user_sql(dataPost []uint8) []ResponseLogin {
 	fmt.Println("insert user sql with token")
 
 	err := godotenv.Load("./env/env")
@@ -296,16 +303,27 @@ func insert_user_sql(dataPost []uint8) {
 
 	//insert in postgres
 	sqlStatement := `INSERT INTO usuario (username, password, email, token, created_at) VALUES ($1, $2, $3, $4, $5)`
-	_, err = db.Exec(sqlStatement, InsertJson.Username, InsertJson.Password, InsertJson.Email, signedToken, myTime)
-	//sqlStatement := `INSERT INTO usuario (password, email, token, created_at) VALUES ($1, $2, $3, $4)`
-	//_, err = db.Exec(sqlStatement, InsertJson.Password, InsertJson.Email, signedToken, myTime)
+	result, err := db.Exec(sqlStatement, InsertJson.Username, InsertJson.Password, InsertJson.Email, signedToken, myTime)
 	if err != nil {
 		log.Fatal(err)
-	} else {
-		fmt.Println("\nRow inserted successfully!, token: ", signedToken)
-	}
-	return
 
+	} else {
+		// If there is no error, you can retrieve additional information about the execution
+		rowCount, err := result.RowsAffected()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// Check the number of rows affected
+		fmt.Printf("Rows inserted successfully! Rows affected: %d, token: %s\n", rowCount, signedToken)
+		//fmt.Println("\nRow inserted successfully!, token: ", signedToken)
+		response := ResponseLogin{Email: *InsertJson.Email}
+		responses := []ResponseLogin{response}
+
+		return responses
+	}
+
+	return nil
 }
 
 func insert_header_sql(dataPost []uint8) {

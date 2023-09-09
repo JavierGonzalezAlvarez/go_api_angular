@@ -27,14 +27,16 @@ export class RegisterComponent implements OnInit {
   register(credenciales: userCredentials) {
     this.seguridadService.register(credenciales)
       .subscribe(
-        respuesta => {
-          this.seguridadService.saveToken(respuesta);
-          this.router.navigate(['/']);
+      (respuesta: any) => {
+        console.log('Registration successful');
+        console.log('API Response:', respuesta); // Log the API response
+        this.router.navigate(['/']);
       },
         errores => {
           this.handleAPIErrors(errores)
           console.log('API Errors:', this.errores)
         }
       );
+
   }
 }
