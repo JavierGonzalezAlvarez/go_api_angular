@@ -28,7 +28,7 @@ export class FormularioAutenticacionComponent implements OnInit {
     console.log(this.accion)
 
     this.form = this.formBuilder.group({
-      username: ['', Validators.maxLength],
+      username: ['', Validators.maxLength(15)],
       email: [
         '',
         {

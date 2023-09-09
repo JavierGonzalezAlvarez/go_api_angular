@@ -14,11 +14,15 @@ export class RegisterComponent implements OnInit {
   constructor(private seguridadService: SeguridadService,
     private router: Router) { }
 
+  errores: string[] = [];
+
+  handleAPIErrors(errores: any) {
+    this.errores = parsearErroresAPI(errores);
+  }
+
   ngOnInit(): void {
 
   }
-
-  errores: string[] = [];
 
   register(credenciales: userCredentials) {
     this.seguridadService.register(credenciales)
@@ -27,6 +31,10 @@ export class RegisterComponent implements OnInit {
           this.seguridadService.saveToken(respuesta);
           this.router.navigate(['/']);
       },
-         errores => this.errores = parsearErroresAPI(errores));
+        errores => {
+          this.handleAPIErrors(errores)
+          console.log('API Errors:', this.errores)
+        }
+      );
   }
 }

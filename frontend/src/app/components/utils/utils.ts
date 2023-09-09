@@ -1,26 +1,30 @@
 export function parsearErroresAPI(response: any): string[] {
-  const resultado: string[] = [];
+  const errores: string[] = [];
 
-  if (response.error) {
-    if (typeof response.error === 'string') {
-      resultado.push(response.error);
+  if (response) {
+    if (response.error) {
+      if (typeof response.error === 'string') {
+        // Handle a single error message
+        errores.push(response.error);
+      } else if (Array.isArray(response.error)) {
+        // Handle an array of error messages
+        errores.push(...response.error);
+      } else if (response.error.errors) {
 
-    } else if (Array.isArray(response.error)) {
-      response.error.array.forEach((valor: string) => {
-        resultado.push(valor)
-      });
-    }
-    else {
-      const mapaErrores = response.error.errors;
-      const entradas = Object.entries(mapaErrores);
-      entradas.forEach((arreglo: any[]) => {
-        const campo = arreglo[0];
-        arreglo[1].forEach((mensajeError: any) => {
-          resultado.push(`${campo}: ${mensajeError}`);
-        });
-      });
+        const errorObj = response.error.errors;
+        for (const campo in errorObj) {
+          if (errorObj.hasOwnProperty(campo)) {
+            const mensajes = errorObj[campo];
+            for (const mensaje of mensajes) {
+              errores.push(`${campo}: ${mensaje}`);
+            }
+          }
+        }
+//        console.log(errores)
+      }
     }
   }
 
-  return resultado;
+  return errores;
 }
+

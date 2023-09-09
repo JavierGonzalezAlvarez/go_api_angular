@@ -16,6 +16,10 @@ export class LoginComponent implements OnInit {
 
   errores: string[] = [];
 
+  handleAPIErrors(errores: any) {
+    this.errores = parsearErroresAPI(errores);
+  }
+
   ngOnInit(): void {
   }
 
@@ -23,10 +27,14 @@ export class LoginComponent implements OnInit {
     this.seguridadService.login(credenciales)
       .subscribe(
         respuesta => {
-          this.seguridadService.saveToken(respuesta);
+          //this.seguridadService.saveToken(respuesta);
           this.router.navigate(['/']);
       },
-        errores => this.errores = parsearErroresAPI(errores));
+      errores => {
+        this.handleAPIErrors(errores)
+        console.log('API Errors:', this.errores)
+      }
+    );
   }
 
 }
