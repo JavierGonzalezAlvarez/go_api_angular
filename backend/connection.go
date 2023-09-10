@@ -8,16 +8,6 @@ import (
 	_ "github.com/lib/pq"
 )
 
-/*
-const (
-	host     = "localhost"
-	port     = 5432
-	user     = "test"
-	password = "2525_ap"
-	dbname   = "invoices"
-)
-*/
-
 func connexion() *sql.DB {
 	//connect db
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+

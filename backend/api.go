@@ -64,24 +64,22 @@ func (h *User) IsEmptyEmail() bool {
 }
 
 func main() {
-	fmt.Println("back api")
-	fmt.Println("running on http://localhost:8080/")
-	fmt.Println("running on http://localhost:8080/get")
-	fmt.Println("running on http://localhost:8080/getOne/1")
-	fmt.Println("running on http://localhost:8080/createOneHeader")
-	fmt.Println("running on http://localhost:8080/updateOne/1")
-	fmt.Println("running on http://localhost:8080/deleteOne/1")
-	fmt.Println("running on http://localhost:8080/createOneInvoice")
 
-	fmt.Println("running on http://localhost:8080/getUsers")
-	fmt.Println("running on http://localhost:8080/createOneUser")
+	// Log messages
+	/*
+		Logger.WithFields(logrus.Fields{
+			"key1": "value1",
+			"key2": "value2",
+		}).Info("This is an info log message.")
 
-	fmt.Println("running on http://localhost:8080/users/login")
+		Logger.Info("This is an info message.")
+		Logger.Warn("This is a warning message.")
+		Logger.Error("This is an error message.")
+
+	*/
 
 	router := mux.NewRouter()
 
-	router.HandleFunc("/", home).Methods("GET")
-	router.HandleFunc("/get", getAllRecords).Methods("GET")
 	// swagger:route GET /getOne/{id} getOneRecord
 	//
 	// It returns one record.
@@ -111,15 +109,21 @@ func main() {
 	//				description: "Data Header table"
 	//       422:
 	//				description: "Error 422"
-	router.HandleFunc("/getOne/{id}", getOneRecord).Methods("GET")
-	router.HandleFunc("/createOneHeader", createOneRecordHeader).Methods("POST")
-	router.HandleFunc("/updateOne/{id}", updateOneRecord).Methods("PUT")
-	router.HandleFunc("/deleteOne/{id}", deleteOneRecord).Methods("DELETE")
-	router.HandleFunc("/createOneInvoice", createOneRecordInvoice).Methods("POST")
 
-	router.HandleFunc("/getUsers", getAllUsers).Methods("GET")
-	router.HandleFunc("/users/createOneUser", createOneUser).Methods("POST")
-	router.HandleFunc("/users/login", postUserLogin).Methods("POST")
+	routes := []RouteDefinition{
+		{Path: "/", Handler: home, Method: "GET"},
+		{Path: "/get_all_header_invoices", Handler: getAllHeadersInvoices, Method: "GET"},
+		{Path: "/get_one_header_invoice/{id}", Handler: getOneHeaderInvoice, Method: "GET"},
+		{Path: "/createOneHeader", Handler: createOneRecordHeader, Method: "POST"},
+		{Path: "/updateOne/{id}", Handler: updateOneRecord, Method: "PUT"},
+		{Path: "/deleteOne/{id}", Handler: deleteOneRecord, Method: "DELETE"},
+		{Path: "/createOneInvoice", Handler: createOneRecordInvoice, Method: "POST"},
+		{Path: "/getUsers", Handler: getAllUsers, Method: "GET"},
+		{Path: "/users/createOneUser", Handler: createOneUser, Method: "POST"},
+		{Path: "/users/login", Handler: postUserLogin, Method: "POST"},
+	}
+
+	addRoutes(router, routes)
 
 	handler := cors.Default().Handler(router)
 	log.Fatal(http.ListenAndServe(":8080", handler))
@@ -130,7 +134,9 @@ func home(w http.ResponseWriter, _ *http.Request) {
 }
 
 func postUserLogin(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("login from Angular, return token and expiration token")
+
+	Logger.Info("login from Angular, return token and expiration token")
+
 	// Parse request body
 	var creds Credentials
 	if err := json.NewDecoder(r.Body).Decode(&creds); err != nil {
@@ -231,7 +237,7 @@ func createOneUser(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func getAllRecords(w http.ResponseWriter, _ *http.Request) {
+func getAllHeadersInvoices(w http.ResponseWriter, _ *http.Request) {
 	fmt.Println("get all records")
 	// retrieve data from postgres
 	var data = q_sql()
@@ -239,8 +245,9 @@ func getAllRecords(w http.ResponseWriter, _ *http.Request) {
 	json.NewEncoder(w).Encode(data)
 }
 
-func getOneRecord(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("get one record")
+func getOneHeaderInvoice(w http.ResponseWriter, r *http.Request) {
+	Logger.Info("Get one header invoice")
+
 	w.Header().Set("content-type", "application/json")
 	params_value := mux.Vars(r)
 	fmt.Println("params in url", params_value)
@@ -250,7 +257,9 @@ func getOneRecord(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("type of id params = ", reflect.TypeOf(id_params))
 	//convert to int
 	intVar, _ := strconv.Atoi(id_params)
-	var data = q_sql_one(intVar)
+
+	// get header in db
+	var data = get_one_header_invoice(intVar)
 	fmt.Println("type of id params = ", reflect.TypeOf(intVar))
 
 	for _, header := range data {
@@ -265,14 +274,15 @@ func getOneRecord(w http.ResponseWriter, r *http.Request) {
 var headers = []Header{}
 
 func createOneRecordHeader(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("create a new record header")
+	Logger.Info("Create a new record header")
 	w.Header().Set("content-type", "application/json")
 
 	//check if data is empty
 	if r.Body == nil {
 		json.NewEncoder(w).Encode("Pls send some data or validate data sent")
 	}
-	println(r.Body)
+	Logger.Info(r.Body)
+
 	var header Header
 	_ = json.NewDecoder(r.Body).Decode(&header)
 	if header.IsEmptyCompanyName() {
@@ -281,19 +291,22 @@ func createOneRecordHeader(w http.ResponseWriter, r *http.Request) {
 	}
 
 	headers = append(headers, header)
-	//response (200)
-	json.NewEncoder(w).Encode(header)
-	//print json
-	finalJson, _ := json.MarshalIndent(header, "", "\t")
-	fmt.Println("final response json indented", string(finalJson))
-	fmt.Println("type of json = ", reflect.TypeOf(finalJson))
 
-	insert_header_sql(finalJson)
+	// response (200)
+	json.NewEncoder(w).Encode(header)
+
+	// print json
+	finalJson, _ := json.MarshalIndent(header, "", "\t")
+
+	fmt.Println("final response json indented", string(finalJson))
+	Logger.Info("type of json = ", reflect.TypeOf(finalJson))
+
+	create_header_invoice(finalJson)
 	return
 }
 
 func updateOneRecord(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("update one record")
+	Logger.Info("Update one record")
 	w.Header().Set("content-type", "application/json")
 
 	// check if required data is empty
@@ -304,13 +317,15 @@ func updateOneRecord(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//get id
+	// get id
 	params_value := mux.Vars(r)
-	fmt.Println("params in url", params_value)
+	Logger.Info("params in url", params_value)
+
 	id_params := mux.Vars(r)["id"]
 	fmt.Println("value of params id from url: ", id_params)
+
 	intVar, _ := strconv.Atoi(id_params)
-	var data = q_sql_one(intVar)
+	var data = get_one_header_invoice(intVar)
 
 	for _, header := range data {
 		if header.Idheader == intVar {
@@ -320,7 +335,7 @@ func updateOneRecord(w http.ResponseWriter, r *http.Request) {
 			var UpdateJson HeaderPostgres
 			finalJson, _ := json.MarshalIndent(header, "", "\t")
 			json.Unmarshal([]byte(finalJson), &UpdateJson)
-			fmt.Printf("Id Header: %v, Company Name %s \n", UpdateJson.Idheader, UpdateJson.Companyname)
+			fmt.Printf("Id Header: %v, Company Name %s \n", UpdateJson.Idheader, *UpdateJson.Companyname)
 
 			//json to struct
 			//header update
@@ -333,18 +348,21 @@ func updateOneRecord(w http.ResponseWriter, r *http.Request) {
 			headers = append(headers, headerRequire)
 			json.NewEncoder(w).Encode(headerRequire)
 			final, _ := json.MarshalIndent(headerRequire, "", "\t")
-			fmt.Println("record to be updated", string(final))
 
-			update_sql(final)
+			Logger.Info("record to be updated", string(final))
+
+			update_one_header(final)
 			return
 		}
 	}
+
+	// response endpoint
 	json.NewEncoder(w).Encode("No record found by this id")
 	return
 }
 
 func deleteOneRecord(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("delete one record")
+	Logger.Info("Delete one header")
 	w.Header().Set("content-type", "application/json")
 
 	//get id
@@ -353,12 +371,13 @@ func deleteOneRecord(w http.ResponseWriter, r *http.Request) {
 	id_params := mux.Vars(r)["id"]
 	fmt.Println("value of params id from url: ", id_params)
 	intVar, _ := strconv.Atoi(id_params)
-	var data = q_sql_one(intVar)
+
+	var data = get_one_header_invoice(intVar)
 
 	for _, header := range data {
 		if header.Idheader == intVar {
 			fmt.Println("record exist")
-			delete_sql_one(intVar)
+			delete_one_header_invoice(intVar)
 			return
 		}
 	}
@@ -369,7 +388,7 @@ func deleteOneRecord(w http.ResponseWriter, r *http.Request) {
 var invoices = []Invoice{}
 
 func createOneRecordInvoice(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("create a new invoice")
+	Logger.Info("Create a new invoice")
 	w.Header().Set("content-type", "application/json")
 
 	body, err := ioutil.ReadAll(r.Body)
@@ -382,9 +401,10 @@ func createOneRecordInvoice(w http.ResponseWriter, r *http.Request) {
 
 	if json.Valid(body) {
 		println("created a valid json")
-		fmt.Fprintf(w, "Received body: %s", string(body))
-		fmt.Println("response body:", string(body))
-		insert_invoice_sql(body)
+		Logger.Info(w, "Received body: %s", string(body))
+		Logger.Info("response body:", string(body))
+
+		create_one_invoice(body)
 		return
 	} else {
 		http.Error(w, "Error, empty data", http.StatusBadRequest)

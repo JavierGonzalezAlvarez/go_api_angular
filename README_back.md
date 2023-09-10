@@ -29,6 +29,7 @@ path: backend
 * $ go get github.com/rs/cors
 * $ go get -u github.com/go-swagger/go-swagger/cmd/swagger
 * $ go get -u github.com/golang-jwt/jwt/v5
+* $ go get github.com/sirupsen/logrus
 
 ## docs
 https://goswagger.io/
@@ -67,6 +68,15 @@ http://localhost:8080/createOneInvoice
     "numberinvoice": 234,
     "datetime": "2023-04-30T15:14:06Z",
     "createdat": "2023-04-30T15:14:06Z"
+}
+
+- POST http://localhost:8080/createOneHeader
+
+{
+    "idheader": "14",
+    "companyname": "jga",
+    "price": 32,
+    "author": null
 }
 
 -Post Invoice:

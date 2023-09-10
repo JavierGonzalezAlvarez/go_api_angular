@@ -4,11 +4,27 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"time"
 
 	"github.com/golang-jwt/jwt"
+	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 )
+
+type RouteDefinition struct {
+	Path    string
+	Handler http.HandlerFunc
+	Method  string
+}
+
+// print all endpoints
+func addRoutes(router *mux.Router, routes []RouteDefinition) {
+	for _, route := range routes {
+		router.HandleFunc(route.Path, route.Handler).Methods(route.Method)
+		fmt.Printf("Endpoint: %s %s\n", route.Method, "http://localhost:8080"+route.Path)
+	}
+}
 
 func find_email(email string) string {
 	fmt.Println("looking for an email in db  :", email)

@@ -66,7 +66,7 @@ func get_all_users() []Users {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("Successfully connected!")
+	Logger.Info("Successfully connected!")
 	defer db.Close()
 
 	//query
@@ -82,15 +82,15 @@ func get_all_users() []Users {
 	for rows.Next() {
 		var item Users
 		rows.Scan(&item.Iduser, &item.Username, &item.Email)
-		//rows.Scan(&item.Iduser, &item.Email)
 		result = append(result, item)
 	}
-	//fmt.Println("result: ", result)
+
 	return result
 }
 
 func q_sql() []HeaderPostgres {
-	fmt.Println("sql records")
+
+	Logger.Info("sql all headers of invoices")
 
 	err := godotenv.Load("./env/env")
 	if err != nil {
@@ -110,10 +110,10 @@ func q_sql() []HeaderPostgres {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("Successfully connected!")
+	Logger.Info("Successfully connected!")
 	defer db.Close()
 
-	//query
+	// query
 	rows, err := db.Query(`SELECT * FROM "header"`)
 	if err != nil {
 		log.Fatal(err)
@@ -129,11 +129,12 @@ func q_sql() []HeaderPostgres {
 		result = append(result, item)
 	}
 	fmt.Println("result: ", result)
+
 	return result
 }
 
-func q_sql_one(id int) []HeaderPostgres {
-	fmt.Println("sql to psql")
+func get_one_header_invoice(id int) []HeaderPostgres {
+	Logger.Info("Sql get one header invoice")
 
 	err := godotenv.Load("./env/env")
 	if err != nil {
@@ -145,15 +146,14 @@ func q_sql_one(id int) []HeaderPostgres {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("Successfully connected!")
+	Logger.Info("Successfully connected!")
 	defer db.Close()
 
 	rows, err := db.Query("select * from header where id_header = $1", id)
-	//rows, err := db.Query(`SELECT * FROM header WHERE id_header = $1`, id)
 	if err != nil {
 		log.Fatal(err)
 	} else {
-		fmt.Println("\nRow selected successfully!")
+		Logger.Info("Row selected successfully!")
 	}
 	defer rows.Close()
 
@@ -162,13 +162,13 @@ func q_sql_one(id int) []HeaderPostgres {
 		var item HeaderPostgres
 		rows.Scan(&item.Idheader, &item.Companyname, &item.Address, &item.NumberInvoice, &item.DateTime, &item.CreatedAt)
 		result = append(result, item)
-		fmt.Println("result: ", result)
 	}
+
 	return result
 }
 
 func create_user_sql(dataPost []uint8) []ResponseLogin {
-	fmt.Println("insert user sql with token")
+	Logger.Info("insert user sql with token")
 
 	err := godotenv.Load("./env/env")
 	if err != nil {
@@ -180,8 +180,8 @@ func create_user_sql(dataPost []uint8) []ResponseLogin {
 	if err != nil {
 		panic(err)
 	}
+	Logger.Info("Successfully connected!")
 
-	fmt.Println("Successfully connected!")
 	defer db.Close()
 	fmt.Println("json from api post", string(dataPost))
 
@@ -209,6 +209,7 @@ func create_user_sql(dataPost []uint8) []ResponseLogin {
 
 		// Check the number of rows affected
 		fmt.Printf("Rows inserted successfully! Rows affected: %d, token: %s\n", rowCount, signedToken)
+
 		//fmt.Println("\nRow inserted successfully!, token: ", signedToken)
 		response := ResponseLogin{Email: *InsertJson.Email}
 		responses := []ResponseLogin{response}
@@ -219,8 +220,8 @@ func create_user_sql(dataPost []uint8) []ResponseLogin {
 	return nil
 }
 
-func insert_header_sql(dataPost []uint8) {
-	fmt.Println("insert header sql")
+func create_header_invoice(dataPost []uint8) {
+	Logger.Info("Create a header of an invoice")
 
 	err := godotenv.Load("./env/env")
 	if err != nil {
@@ -233,30 +234,34 @@ func insert_header_sql(dataPost []uint8) {
 		panic(err)
 	}
 
-	fmt.Println("Successfully connected!")
+	Logger.Info("Successfully connected!")
 	defer db.Close()
-	fmt.Println("json from api post", string(dataPost))
+
+	Logger.Info("json from api post", string(dataPost))
 
 	// decode structure data: from json to struct
 	var InsertJson HeaderPostgres
 	json.Unmarshal([]byte(dataPost), &InsertJson)
-	fmt.Println("type of InsertJson = ", reflect.TypeOf(InsertJson))
-	fmt.Printf("Id Header: %v, Company Name %s \n", InsertJson.Idheader, InsertJson.Companyname)
+
+	Logger.Info("type of InsertJson = ", reflect.TypeOf(InsertJson))
+	fmt.Printf("Id Header: %v, Company Name %s \n", InsertJson.Idheader, *InsertJson.Companyname)
 
 	myTime := time.Now()
+
 	//insert in postgres
 	sqlStatement := `INSERT INTO header (companyname, address, numberinvoice, date_time) VALUES ($1, $2, $3, $4)`
 	_, err = db.Exec(sqlStatement, InsertJson.Companyname, InsertJson.Address, InsertJson.NumberInvoice, myTime)
 	if err != nil {
 		log.Fatal(err)
 	} else {
-		fmt.Println("\nRow inserted successfully!")
+		Logger.Info("Row inserted successfully!")
 	}
+
 	return
 }
 
-func update_sql(dataPost []uint8) {
-	fmt.Println("update sql")
+func update_one_header(dataPost []uint8) {
+	Logger.Info("update sql")
 
 	err := godotenv.Load("./env/env")
 	if err != nil {
@@ -267,29 +272,33 @@ func update_sql(dataPost []uint8) {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("Successfully connected!")
+	Logger.Info("Successfully connected!")
 	defer db.Close()
-	fmt.Println("json from api post", string(dataPost))
+
+	Logger.Info("json from api post", string(dataPost))
 
 	// decode structure data: from json to struct
 	var UpdateJson HeaderPostgres
 	json.Unmarshal([]byte(dataPost), &UpdateJson)
-	fmt.Println("type of InsertJson = ", reflect.TypeOf(UpdateJson))
-	fmt.Printf("Id Header: %v, Company Name %s \n", UpdateJson.Idheader, UpdateJson.Companyname)
+	Logger.Info("type of InsertJson = ", reflect.TypeOf(UpdateJson))
+
+	fmt.Printf("Id Header: %v, Company Name %s \n", UpdateJson.Idheader, *UpdateJson.Companyname)
 
 	//update in postgres
 	rows, err := db.Query("UPDATE header SET companyname = $2 WHERE id_header = $1", UpdateJson.Idheader, UpdateJson.Companyname)
 	if err != nil {
 		log.Fatal(err)
 	} else {
-		fmt.Println("\nRow updates successfully!")
+		Logger.Info("Row updates successfully!")
 	}
 	defer rows.Close()
+
 	return
 }
 
-func delete_sql_one(id int) {
-	fmt.Println("delete sql")
+func delete_one_header_invoice(id int) {
+
+	Logger.Info(("Delete one header invoice"))
 
 	err := godotenv.Load("./env/env")
 	if err != nil {
@@ -301,29 +310,22 @@ func delete_sql_one(id int) {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("Successfully connected!")
+
+	Logger.Info("Successfully connected!")
 	defer db.Close()
 
 	rows, err := db.Query("delete from header where id_header = $1", id)
-	//rows, err := db.Query(`SELECT * FROM header WHERE id_header = $1`, id)
 	if err != nil {
-		log.Fatal(err)
+		Logger.Error(err)
 	} else {
 		fmt.Println("\nRow deletes successfully!")
 	}
 	defer rows.Close()
 
-	//var result = []HeaderPostgres{}
-	//for rows.Next() {
-	//	var item HeaderPostgres
-	//	rows.Scan(&item.Idheader, &item.Companyname, &item.Address, &item.NumberInvoice, &item.DateTime, &item.CreatedAt)
-	//	result = append(result, item)
-	//	fmt.Println("result: ", result)
-	//}
 }
 
-func insert_invoice_sql(dataPost []uint8) {
-	fmt.Println("insert invoice sql")
+func create_one_invoice(dataPost []uint8) {
+	Logger.Info("Create invoice 8header & detail)")
 
 	err := godotenv.Load("./env/env")
 	if err != nil {
@@ -335,7 +337,7 @@ func insert_invoice_sql(dataPost []uint8) {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("Successfully connected!")
+	Logger.Info("Successfully connected!")
 	defer db.Close()
 
 	// decode structure data: from json to struct, datetime format must be correct
@@ -397,7 +399,7 @@ func insert_invoice_sql(dataPost []uint8) {
 			//db.Rollback()
 			return
 		} else {
-			fmt.Println("\nRow Detail inserted successfully!")
+			Logger.Info("Row Detail inserted successfully!")
 		}
 	}
 	return
