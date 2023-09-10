@@ -21,17 +21,18 @@ export class ServiceService {
   //}
 
 
-  public getAll(limitOfResults=3): Observable<serverResponse["invoices"]> {
-    return this.http.get<serverResponse["invoices"]>(this.urlBackend + 'get', {
+
+  public get_all_headers(limitOfResults=3): Observable<serverResponse["invoices"]> {
+    return this.http.get<serverResponse["invoices"]>(this.urlBackend + 'get_all_header_invoices', {
       params: {
         limit: limitOfResults.toString()
       }
     });
   }
 
-  //loaded data form the front
-  public loadPage(page: number): Observable<serverResponse["invoices"]> {
-    return this.http.get<serverResponse["invoices"]>(this.urlBackend + 'get', {
+  //loaded data - list table
+  public get_all_headers_table(page: number): Observable<serverResponse["invoices"]> {
+    return this.http.get<serverResponse["invoices"]>(this.urlBackend + 'get_all_header_invoices', {
       params: {
         page: page
       }

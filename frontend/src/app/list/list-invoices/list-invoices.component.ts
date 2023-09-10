@@ -14,6 +14,7 @@ export interface PeriodicElement {
   symbol: string;
 }
 
+/*
 const ELEMENT_DATA: PeriodicElement[] = [
   {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
   {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
@@ -26,7 +27,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
   {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
   {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
 ];
-
+*/
 
 @Component({
   selector: 'app-list-invoices',
@@ -37,64 +38,21 @@ export class ListInvoicesComponent implements OnInit {
 
   @Input()
   invoices_child: Invoices[] = [];
-  
-  displayedColumns: string[] = ['idheader', 'company', 'address', 'numberinvoice', 'datatime', 'createdat'];
-     
-  public currentPage: number = 1;
 
   constructor(private listService: ServiceService) {
     this.invoices_child = [];
-  }
- 
-  addInvoice() {
-    console.log("to be done");
-  }
-
-  removeInvoice() {
-    console.log("to be done");
-  }
+   }
 
   ngOnInit(): void {
-    this.loadPage(this.currentPage);
-  }
-  
-  /*
-  loadData( page: number ) {
-    this.listService.getAll().subscribe((invs: serverResponse["invoices"]) => {
-      this.invoices_child = invs;
-      console.log("invoices: ", this.invoices_child)   
-    });  
-  }
- */
-
-  loadPage( page: number ) {
-    this.listService.loadPage( page )
-      .pipe(
-        filter( (invoices: any[]) => invoices.length > 0 )
-      )
-      .subscribe( invoices => {
-        console.log(invoices)
-        this.currentPage = page;
-        this.invoices_child = invoices
-      })
+    this.loadData();
   }
 
   loadData() {
-    this.listService.getAll()
-      .subscribe((invs: serverResponse["invoices"]) => {
-        this.invoices_child = invs;
-        console.log("invoices: ", this.invoices_child)   
-    }); 
-  }
-
-   /*
-  loadData() {
-    this.listService.getAll().subscribe((inv: Invoices[]) => {
+    this.listService.get_all_headers().subscribe((inv: Invoices[]) => {
       //console.log(inv)
-      this.invoices =  inv;
-      console.log("invoices", this.invoices);
+      this.invoices_child =  inv;
+      console.log("invoices", this.invoices_child);
     })
   };
-  */
 }
 

@@ -6,10 +6,12 @@ import { HomeComponent } from './components/home/home.component';
 import { ListInvoicesComponent } from './list/list-invoices/list-invoices.component';
 import { RegisterComponent } from './components/seguridad/register/register.component';
 import { ListInvoicesDetailsComponent } from './list/list-invoices-details/list-invoices-details.component';
+import { ListInvoicesTableComponent } from './list/list-invoices-table/list-invoices-table.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'list_of_invoices', component: ListInvoicesComponent},
+  {path: 'list_of_invoices_table', component: ListInvoicesTableComponent},
   {path: 'list_and_details', component: ListInvoicesDetailsComponent},
   {path: 'login', component: LoginComponent},
   {path: 'register', component: RegisterComponent},

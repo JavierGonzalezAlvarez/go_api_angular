@@ -23,6 +23,7 @@ import { AutorizadoComponent } from './components/seguridad/autorizado/autorizad
 import { ValidatorsComponent } from './components/utils/validators/validators.component';
 import { FormularioAutenticacionComponent } from './components/seguridad/formulario-autenticacion/formulario-autenticacion.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ListInvoicesTableComponent } from './list/list-invoices-table/list-invoices-table.component';
 
 
 @NgModule({
@@ -42,6 +43,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     AutorizadoComponent,
     ValidatorsComponent,
     FormularioAutenticacionComponent,
+    ListInvoicesTableComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,63 @@
+
+<app-list-general [list_invoices_general] = "invoices_child_table">
+
+    <ng-container contenido>
+      <h3>List of Invoices - Table</h3>
+
+      <div class="list_invoices-button-container">
+          <button mat-raised-button (click)="addInvoice()" class="list_invoices-button">
+            Add new invoice
+          </button>
+          <button
+              mat-raised-button
+              (click)="removeInvoice()"
+              class="list_invoices-button">
+            Delete invoice
+          </button>
+          <button
+              mat-raised-button
+              (click)="loadPage( currentPage + 1 )"
+              class="list_invoices-button">
+              Cargar más - Página ({{ currentPage }})
+          </button>
+        </div>
+
+        <table mat-table [dataSource]="invoices_child_table" class="mat-elevation-z8 table_list_invoices">
+
+          <ng-container matColumnDef="idheader">
+            <th mat-header-cell *matHeaderCellDef>Id</th>
+            <td mat-cell *matCellDef="let element">{{element.idheader}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="company">
+            <th mat-header-cell *matHeaderCellDef>Company Name</th>
+            <td mat-cell *matCellDef="let element">{{element.companyname}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="address">
+            <th mat-header-cell *matHeaderCellDef>Address</th>
+            <td mat-cell *matCellDef="let element">{{element.address}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="numberinvoice">
+              <th mat-header-cell *matHeaderCellDef>Nº invoice</th>
+              <td mat-cell *matCellDef="let element">{{element.numberinvoice}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="datatime">
+              <th mat-header-cell *matHeaderCellDef>Date</th>
+              <td mat-cell *matCellDef="let element">{{element.datetime | date}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="createdat">
+            <th mat-header-cell *matHeaderCellDef>Created at</th>
+            <td mat-cell *matCellDef="let element">{{element.createdat | date}}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+  </ng-container>
+
+</app-list-general>
