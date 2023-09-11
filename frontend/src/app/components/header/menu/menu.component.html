@@ -1,7 +1,16 @@
 <mat-toolbar color="primary">
-    <div>
-        <a mat-button routerLink="">Home</a>
-    </div>
+
+
+    <mat-icon routerLink="">home</mat-icon>
+
+    <a mat-button [matMenuTriggerFor]="invoices">Invoices</a>
+    <mat-menu #invoices="matMenu">
+      <a mat-menu-item routerLink="list_of_invoices">Invoices</a>
+      <a mat-menu-item routerLink="list_of_invoices_table">Invoices-Table</a>
+      <a mat-menu-item routerLink="list_and_details">Invoices-Details</a>
+    </mat-menu>
+
+    <!--
     <div>
         <a mat-button routerLink="list_of_invoices">Invoices</a>
     </div>
@@ -11,9 +20,9 @@
     <div>
         <a mat-button routerLink="list_and_details">Invoices-Details</a>
     </div>
+    -->
 
     <div class="espacio"></div>
-
 
     <app-autorizado>
       <ng-container autorizado>
@@ -28,5 +37,28 @@
       </ng-container>
   </app-autorizado>
 
+
+    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="icon-button menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item>
+        <mat-icon>email</mat-icon>
+        <span>Email</span>
+      </button>
+      <button mat-menu-item>
+      <!--<button mat-menu-item disabled></button>-->
+        <mat-icon>settings</mat-icon>
+        <span>Settings</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>search</mat-icon>
+        <span>Search</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>notifications_off</mat-icon>
+        <span>Disable alerts</span>
+      </button>
+    </mat-menu>
 
 </mat-toolbar>

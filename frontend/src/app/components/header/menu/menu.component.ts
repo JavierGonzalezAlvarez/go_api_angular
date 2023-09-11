@@ -7,6 +7,7 @@ import { SeguridadService } from '../../seguridad/seguridad.service';
   styleUrls: ['./menu.component.scss']
 })
 export class MenuComponent implements OnInit {
+menu: any;
 
   constructor(public seguridadService: SeguridadService) { }
 
