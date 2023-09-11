@@ -88,7 +88,7 @@ func get_all_users() []Users {
 	return result
 }
 
-func q_sql() []HeaderPostgres {
+func get_all_headers_invoices_total() []ResponseTotalHeaders {
 
 	Logger.Info("sql all headers of invoices")
 

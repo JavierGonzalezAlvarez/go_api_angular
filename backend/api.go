@@ -113,6 +113,7 @@ func main() {
 	routes := []RouteDefinition{
 		{Path: "/", Handler: home, Method: "GET"},
 		{Path: "/get_all_header_invoices", Handler: getAllHeadersInvoices, Method: "GET"},
+		{Path: "/get_all_header_invoices_total", Handler: getAllHeadersInvoicesTotal, Method: "GET"},
 		{Path: "/get_one_header_invoice/{id}", Handler: getOneHeaderInvoice, Method: "GET"},
 		{Path: "/createOneHeader", Handler: createOneRecordHeader, Method: "POST"},
 		{Path: "/updateOne/{id}", Handler: updateOneRecord, Method: "PUT"},
@@ -238,9 +239,19 @@ func createOneUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func getAllHeadersInvoices(w http.ResponseWriter, _ *http.Request) {
-	fmt.Println("get all records")
+	Logger.Info("Get all records")
+
 	// retrieve data from postgres
-	var data = q_sql()
+	var data = get_all_headers_invoices()
+	w.Header().Set("content-type", "application/json")
+	json.NewEncoder(w).Encode(data)
+}
+
+func getAllHeadersInvoicesTotal(w http.ResponseWriter, _ *http.Request) {
+	Logger.Info("Get all records with total")
+
+	// retrieve data from postgres
+	var data = get_all_headers_invoices_total()
 	w.Header().Set("content-type", "application/json")
 	json.NewEncoder(w).Encode(data)
 }
