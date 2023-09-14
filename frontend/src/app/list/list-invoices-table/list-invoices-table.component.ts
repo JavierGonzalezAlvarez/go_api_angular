@@ -15,28 +15,41 @@ export class ListInvoicesTableComponent implements OnInit {
   invoices_child_table: Invoices[] = [];
 
   public currentPage: number = 1;
-
+  public pageSize: number = 5;
+  public totalItems: number = 0;
+  public totalPages: number = 0;
 
   displayedColumns: string[] = ['idheader', 'company', 'address', 'numberinvoice', 'datatime', 'createdat'];
+
 
   constructor(private listService: ServiceService) {
     this.invoices_child_table = [];
   }
 
   ngOnInit(): void {
-    this.loadPage(this.currentPage);
+    this.loadPage(this.currentPage, this.totalItems);
   }
 
-  loadPage( page: number ) {
-    this.listService.get_all_headers_table( page )
+  loadPage( limitOfResults: number, totalItems: number ) {
+    this.listService.get_all_headers_table( limitOfResults, totalItems )
       .pipe(
         filter( (invoices: any[]) => invoices.length > 0 )
       )
       .subscribe( invoices => {
         console.log(invoices)
-        this.currentPage = page;
+        this.currentPage = limitOfResults;
+        this.totalItems = totalItems;
+        this.totalPages = this.totalItems / this.pageSize;
+        //this.totalItems = invoices.totalCount;
+        console.log(this.totalItems , this.totalPages)
+
         this.invoices_child_table = invoices
       })
+  }
+
+  onPageChange(page: number, size: number) {
+    this.currentPage = page;
+    this.loadPage(page, size);
   }
 
   /*

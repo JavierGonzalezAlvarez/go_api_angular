@@ -175,7 +175,8 @@ func postUserLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func getAllUsers(w http.ResponseWriter, _ *http.Request) {
-	fmt.Println("get all users")
+	Logger.Info("get all users")
+
 	var data = get_all_users()
 	w.Header().Set("content-type", "application/json")
 	json.NewEncoder(w).Encode(data)
@@ -264,14 +265,14 @@ func getOneHeaderInvoice(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("params in url", params_value)
 
 	id_params := mux.Vars(r)["id"]
-	fmt.Println("value of params id from url: ", id_params)
-	fmt.Println("type of id params = ", reflect.TypeOf(id_params))
+	Logger.Info("value of params id from url: ", id_params)
+	Logger.Info("type of id params = ", reflect.TypeOf(id_params))
 	//convert to int
 	intVar, _ := strconv.Atoi(id_params)
 
 	// get header in db
 	var data = get_one_header_invoice(intVar)
-	fmt.Println("type of id params = ", reflect.TypeOf(intVar))
+	Logger.Info("type of id params = ", reflect.TypeOf(intVar))
 
 	for _, header := range data {
 		if header.Idheader == intVar {

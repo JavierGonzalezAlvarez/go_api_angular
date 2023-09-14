@@ -53,6 +53,12 @@ type ResponseLogin struct {
 	Email string `json:"email"`
 }
 
+// Create a response structure
+type ResponseTotalHeaders struct {
+	TotalCount int              `json:"totalCount"`
+	Results    []HeaderPostgres `json:"results"`
+}
+
 func get_all_users() []Users {
 	fmt.Println("sql users")
 
@@ -97,13 +103,60 @@ func get_all_headers_invoices_total() []ResponseTotalHeaders {
 		log.Fatal("Error loading .env file")
 	}
 
-	/*
-		for _, e := range os.Environ() {
-			pair := strings.SplitN(e, "=", 2)
-			fmt.Printf("%s: %s\n", pair[0], pair[1])
-		}
-		fmt.Println("user", os.Getenv("USER"))
-	*/
+	var db = connexion()
+	err = db.Ping()
+	if err != nil {
+		panic(err)
+	}
+	Logger.Info("Successfully connected!")
+	defer db.Close()
+
+	// query
+	rows, err := db.Query(`SELECT * FROM "header"`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	Logger.Info("list of records")
+
+	var result = []HeaderPostgres{}
+
+	for rows.Next() {
+		var item HeaderPostgres
+		rows.Scan(&item.Idheader, &item.Companyname, &item.Address, &item.NumberInvoice, &item.DateTime, &item.CreatedAt)
+		result = append(result, item)
+	}
+
+	for _, item := range result {
+		fmt.Printf("Idheader: %d\n", item.Idheader)
+		fmt.Printf("Companyname: %s\n", *item.Companyname)
+		fmt.Printf("Address: %s\n", *item.Address)
+		fmt.Printf("NumberInvoice: %d\n", item.NumberInvoice)
+		fmt.Printf("DateTime: %s\n", item.DateTime)
+		fmt.Printf("CreatedAt: %s\n", item.CreatedAt)
+		fmt.Println("---------------")
+	}
+
+	totalCount := len(result)
+	// Create a response instance
+	response := ResponseTotalHeaders{
+		TotalCount: totalCount,
+		Results:    result,
+	}
+
+	return []ResponseTotalHeaders{response}
+
+}
+
+func get_all_headers_invoices() []HeaderPostgres {
+
+	Logger.Info("sql all headers of invoices")
+
+	err := godotenv.Load("./env/env")
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 
 	var db = connexion()
 	err = db.Ping()
@@ -120,17 +173,28 @@ func get_all_headers_invoices_total() []ResponseTotalHeaders {
 	}
 	defer rows.Close()
 
-	fmt.Println("list of records")
-	fmt.Println("---------------")
+	Logger.Info("list of records")
+
 	var result = []HeaderPostgres{}
+
 	for rows.Next() {
 		var item HeaderPostgres
 		rows.Scan(&item.Idheader, &item.Companyname, &item.Address, &item.NumberInvoice, &item.DateTime, &item.CreatedAt)
 		result = append(result, item)
 	}
-	fmt.Println("result: ", result)
+
+	for _, item := range result {
+		fmt.Printf("Idheader: %d\n", item.Idheader)
+		fmt.Printf("Companyname: %s\n", *item.Companyname)
+		fmt.Printf("Address: %s\n", *item.Address)
+		fmt.Printf("NumberInvoice: %d\n", item.NumberInvoice)
+		fmt.Printf("DateTime: %s\n", item.DateTime)
+		fmt.Printf("CreatedAt: %s\n", item.CreatedAt)
+		fmt.Println("---------------")
+	}
 
 	return result
+
 }
 
 func get_one_header_invoice(id int) []HeaderPostgres {

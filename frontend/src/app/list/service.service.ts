@@ -21,7 +21,6 @@ export class ServiceService {
   //}
 
 
-
   public get_all_headers(limitOfResults=3): Observable<serverResponse["invoices"]> {
     return this.http.get<serverResponse["invoices"]>(this.urlBackend + 'get_all_header_invoices', {
       params: {
@@ -31,10 +30,11 @@ export class ServiceService {
   }
 
   //loaded data - list table
-  public get_all_headers_table(page: number): Observable<serverResponse["invoices"]> {
+  public get_all_headers_table(limitOfResults=3, totalItems: number): Observable<serverResponse["invoices"]> {
     return this.http.get<serverResponse["invoices"]>(this.urlBackend + 'get_all_header_invoices', {
       params: {
-        page: page
+        limitOfResults: limitOfResults,
+        totalItems: totalItems
       }
     })
     .pipe(map( response => response));
