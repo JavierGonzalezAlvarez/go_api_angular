@@ -18,14 +18,8 @@
             mat-raised-button
             (click)="loadPage( currentPage + 1, pageSize )"
             class="list_invoices-button">
-            Cargar más - Página ({{ currentPage }})
+            Load more records - Page ({{ currentPage }})
         </button>
-      </div>
-
-      <div class="pagination">
-        <button (click)="onPageChange(currentPage - 1, 5)" [disabled]="currentPage === 1">Previous</button>
-        <span>{{ currentPage }} / {{ totalPages }}</span>
-        <button (click)="onPageChange(currentPage + 1, 5)" [disabled]="currentPage === totalPages">Next</button>
       </div>
 
 

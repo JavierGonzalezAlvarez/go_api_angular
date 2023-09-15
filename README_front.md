@@ -26,6 +26,7 @@ path: frontend
 * $ npx ng g component list/listGeneral --skip-tests=true
 * $ npx ng g component list/listInvoices --skip-tests=true
 * $ npx ng g component list/listInvoicesTable --skip-tests=true
+* $ npx ng g component list/listInvoicesTableTotal --skip-tests=true
 * $ npx ng g component list/listInvoicesDetails --skip-tests=true
 
 ## material design

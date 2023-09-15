@@ -1,0 +1,81 @@
+
+<app-list-general [list_invoices_general] = "invoices_child_table_total">
+
+  <!-- margin: style="margin-left: 20px; margin-right: 20px;"" -->
+  <ng-container contenido style="margin-left: 20px; margin-right: 20px;">
+    <h3>List of Invoices - Table - Counting Elements</h3>
+
+    <div class="list_invoices-button-container" style="margin-left: 20px; margin-right: 20px;">
+      <button mat-raised-button (click)="addInvoice()" class="list_invoices-button">
+        Add new invoice
+      </button>
+      <button
+          mat-raised-button
+          (click)="removeInvoice()"
+          class="list_invoices-button">
+        Delete invoice
+      </button>
+      <button
+          mat-raised-button
+          (click)="loadPage( currentPage - 1, size )"
+          class="list_invoices-button"
+          [disabled]="currentPage === 1">
+          Load less - Page
+      </button>
+      <button
+          mat-raised-button
+          (click)="loadPage( currentPage + 1, size )"
+          class="list_invoices-button"
+          [disabled]="currentPage === totalPages">
+          Load more - Page ({{ currentPage }})
+      </button>
+    </div>
+
+    <div class="pagination" style="margin-left: 20px; margin-right: 20px;">
+      <button (click)="onPageChange(currentPage - 1, size)" [disabled]="currentPage === 1">Previous Page</button>
+      <span> {{ currentPage }} / {{ totalPages }} </span>
+      <button (click)="onPageChange(currentPage + 1, size)" [disabled]="currentPage === totalPages">Next Page</button>
+    </div>
+
+    <div class="table" style="margin-left: 20px; margin-right: 20px;">
+      <table mat-table [dataSource]="invoices_child_table_total" class="mat-elevation-z8 table_list_invoices">
+
+        <ng-container matColumnDef="idheader">
+          <th mat-header-cell *matHeaderCellDef>Id</th>
+          <td mat-cell *matCellDef="let element">{{element.idheader}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="company">
+          <th mat-header-cell *matHeaderCellDef>Company Name</th>
+          <td mat-cell *matCellDef="let element">{{element.companyname}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="address">
+          <th mat-header-cell *matHeaderCellDef>Address</th>
+          <td mat-cell *matCellDef="let element">{{element.address}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="numberinvoice">
+            <th mat-header-cell *matHeaderCellDef>Nº invoice</th>
+            <td mat-cell *matCellDef="let element">{{element.numberinvoice}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="datatime">
+            <th mat-header-cell *matHeaderCellDef>Date</th>
+            <td mat-cell *matCellDef="let element">{{element.datetime | date}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="createdat">
+          <th mat-header-cell *matHeaderCellDef>Created at</th>
+          <td mat-cell *matCellDef="let element">{{element.createdat | date}}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+    </div>
+
+</ng-container>
+
+</app-list-general>

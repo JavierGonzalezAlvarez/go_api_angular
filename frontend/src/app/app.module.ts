@@ -24,6 +24,7 @@ import { ValidatorsComponent } from './components/utils/validators/validators.co
 import { FormularioAutenticacionComponent } from './components/seguridad/formulario-autenticacion/formulario-autenticacion.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ListInvoicesTableComponent } from './list/list-invoices-table/list-invoices-table.component';
+import { ListInvoicesTableTotalComponent } from './list/list-invoices-table-total/list-invoices-table-total.component';
 
 
 @NgModule({
@@ -44,6 +45,7 @@ import { ListInvoicesTableComponent } from './list/list-invoices-table/list-invo
     ValidatorsComponent,
     FormularioAutenticacionComponent,
     ListInvoicesTableComponent,
+    ListInvoicesTableTotalComponent,
   ],
   imports: [
     BrowserModule,

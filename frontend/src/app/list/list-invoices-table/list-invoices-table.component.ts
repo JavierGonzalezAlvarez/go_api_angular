@@ -37,12 +37,6 @@ export class ListInvoicesTableComponent implements OnInit {
       )
       .subscribe( invoices => {
         console.log(invoices)
-        this.currentPage = limitOfResults;
-        this.totalItems = totalItems;
-        this.totalPages = this.totalItems / this.pageSize;
-        //this.totalItems = invoices.totalCount;
-        console.log(this.totalItems , this.totalPages)
-
         this.invoices_child_table = invoices
       })
   }
@@ -51,16 +45,6 @@ export class ListInvoicesTableComponent implements OnInit {
     this.currentPage = page;
     this.loadPage(page, size);
   }
-
-  /*
-  loadData() {
-    this.listService.getAll()
-      .subscribe((invs: serverResponse["invoices"]) => {
-        this.invoices_child_table = invs;
-        console.log("invoices: ", this.invoices_child_table)
-    });
-  }
-  */
 
 
   addInvoice() {

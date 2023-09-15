@@ -40,4 +40,14 @@ export class ServiceService {
     .pipe(map( response => response));
   }
 
+  public get_all_headers_table_total(totalItems: number): Observable<serverResponse["invoices"]> {
+    return this.http.get<serverResponse["invoices"]>(this.urlBackend + 'get_all_header_invoices_total', {
+      params: {
+        totalItems: totalItems
+      }
+    })
+    .pipe(map( response => response));
+  }
+
+
 }
