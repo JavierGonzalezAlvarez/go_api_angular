@@ -38,6 +38,7 @@ export class SeguridadService {
   estaLogueado(): boolean {
     const token = localStorage.getItem(this.llaveToken);
     if (!token) {
+      console.log("no JWT, no logeado")
       return false;
     }
 
@@ -48,6 +49,8 @@ export class SeguridadService {
     //  this.logout();
     //  return false;
     // }
+
+    console.log("there is JWT, logeado")
     return true;
   }
 

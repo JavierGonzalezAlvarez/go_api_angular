@@ -1,42 +1,50 @@
 <mat-toolbar color="primary">
 
-
     <mat-icon routerLink="">home</mat-icon>
 
-    <a mat-button [matMenuTriggerFor]="invoices">Invoices</a>
-    <mat-menu #invoices="matMenu">
-      <a mat-menu-item routerLink="list_of_invoices">Invoices</a>
-      <a mat-menu-item routerLink="list_of_invoices_table">Invoices-Table</a>
-      <a mat-menu-item routerLink="list_of_invoices_table_total">Invoices-Table-Total</a>
-      <a mat-menu-item routerLink="list_and_details">Invoices-Details</a>
-    </mat-menu>
+    <app-autorizado>
+      <ng-container autorizado>
+        <!--<a mat-button [matMenuTriggerFor]="invoices" *ngIf="isAuthenticated && userRole === 'user'">Invoices</a>-->
+        <a mat-button [matMenuTriggerFor]="invoices">Invoices</a>
+        <mat-menu #invoices="matMenu">
+          <!-- Opcion 1
+          <a mat-menu-item routerLink="list_of_invoices" *ngIf="isAuthenticated && userRole === 'user'">Invoices</a>
+          <a mat-menu-item routerLink="list_of_invoices_table" *ngIf="isAuthenticated && userRole === 'user'">Invoices-Table</a>
+          <a mat-menu-item routerLink="list_of_invoices_table_total" *ngIf="isAuthenticated && userRole === 'user'">Invoices-Table-Total</a>
+          <a mat-menu-item routerLink="list_and_details" *ngIf="isAuthenticated && userRole === 'user'">Invoices-Details</a>
+          -->
+          <!-- Opcion 2 -->
+          <a mat-menu-item routerLink="list_of_invoices">Invoices</a>
+          <a mat-menu-item routerLink="list_of_invoices_table">Invoices-Table</a>
+          <a mat-menu-item routerLink="list_of_invoices_table_total">Invoices-Table-Total</a>
+          <a mat-menu-item routerLink="list_and_details">Invoices-Details</a>
+        </mat-menu>
+      </ng-container>
+    </app-autorizado>
 
     <!--
     <div>
         <a mat-button routerLink="list_of_invoices">Invoices</a>
     </div>
-    <div>
-      <a mat-button routerLink="list_of_invoices_table">Invoices-Table</a>
-    </div>
-    <div>
-        <a mat-button routerLink="list_and_details">Invoices-Details</a>
-    </div>
     -->
 
     <div class="espacio"></div>
 
-    <app-autorizado>
-      <ng-container autorizado>
-        <!--<span>Hola, {{seguridadService.getFieldJWT('email')}}</span>-->
-        <span>Hola, {{seguridadService.getFieldJWT('username')}}</span>
-        <a mat-button (click)="seguridadService.logout()">Logout</a>
 
+    <app-autorizado>
+
+      <ng-container autorizado>
+        <a>Hola {{seguridadService.getFieldJWT('username')}} - </a>
+        <a mat-button (click)="seguridadService.logout()">Logout</a>
       </ng-container>
+
+
       <ng-container noAutorizado>
         <a mat-button routerLink="login">Login</a>
         <a mat-button routerLink="register">Register</a>
       </ng-container>
-  </app-autorizado>
+
+    </app-autorizado>
 
 
     <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="icon-button menu">

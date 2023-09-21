@@ -28,7 +28,7 @@ export class RegisterComponent implements OnInit {
     this.seguridadService.register(credenciales)
       .subscribe(
       (respuesta: any) => {
-        console.log('Registration successful');
+        console.log('Registration successfully');
         console.log('API Response:', respuesta); // Log the API response
         this.router.navigate(['/']);
       },

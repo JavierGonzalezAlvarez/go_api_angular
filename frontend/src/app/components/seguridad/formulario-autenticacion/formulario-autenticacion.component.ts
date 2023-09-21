@@ -40,7 +40,8 @@ export class FormularioAutenticacionComponent implements OnInit {
         {
           validators: [Validators.required]
         }
-      ]
+      ],
+      role: ['user'] // by default we set user in the filed 'role'
     });
   }
 

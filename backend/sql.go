@@ -17,6 +17,7 @@ type Users struct {
 	Password  *string   `json:"password"`
 	Email     *string   `json:"email"`
 	Token     *string   `json:"token"`
+	Role      *string   `json:"role"`
 	CreatedAt time.Time `json:"createdat"`
 }
 
@@ -47,6 +48,7 @@ type Response struct {
 	Token      string    `json:"token"`
 	Expiracion time.Time `json:"expiracion"`
 	User       string    `json:"username"`
+	Role       string    `json:"role"`
 }
 
 type ResponseLogin struct {
@@ -76,7 +78,7 @@ func get_all_users() []Users {
 	defer db.Close()
 
 	//query
-	rows, err := db.Query(`SELECT id, username, email FROM usuario`)
+	rows, err := db.Query(`SELECT id, username, email, role FROM usuario`)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -87,7 +89,7 @@ func get_all_users() []Users {
 	var result = []Users{}
 	for rows.Next() {
 		var item Users
-		rows.Scan(&item.Iduser, &item.Username, &item.Email)
+		rows.Scan(&item.Iduser, &item.Username, &item.Email, &item.Role)
 		result = append(result, item)
 	}
 
@@ -259,8 +261,9 @@ func create_user_sql(dataPost []uint8) []ResponseLogin {
 	fmt.Println("datetime", myTime)
 
 	//insert in postgres
-	sqlStatement := `INSERT INTO usuario (username, password, email, token, created_at) VALUES ($1, $2, $3, $4, $5)`
-	result, err := db.Exec(sqlStatement, InsertJson.Username, InsertJson.Password, InsertJson.Email, signedToken, myTime)
+	var role = "user" // we insert field role = 'user', by default
+	sqlStatement := `INSERT INTO usuario (username, password, email, token, role, created_at) VALUES ($1, $2, $3, $4, $5, $6)`
+	result, err := db.Exec(sqlStatement, InsertJson.Username, InsertJson.Password, InsertJson.Email, signedToken, role, myTime)
 	if err != nil {
 		log.Fatal(err)
 

@@ -74,7 +74,7 @@ func get_credentials(email string, password string) []Response {
 	fmt.Println("Successfully connected!")
 	defer db.Close()
 
-	rows, err := db.Query("select username, token from usuario where email = $1 and password = $2", email, password)
+	rows, err := db.Query("select username, token, role from usuario where email = $1 and password = $2", email, password)
 	if err != nil {
 		log.Fatal(err)
 	} else {
@@ -85,7 +85,7 @@ func get_credentials(email string, password string) []Response {
 	var result = []Response{}
 	for rows.Next() {
 		var item Response
-		rows.Scan(&item.User, &item.Token)
+		rows.Scan(&item.User, &item.Token, &item.Role)
 		result = append(result, item)
 		fmt.Println("result: ", result)
 	}
@@ -102,23 +102,25 @@ func create_token(dataPost []uint8) string {
 	user := User{
 		Username: *InsertJson.Username,
 		Email:    *InsertJson.Email,
+		Role:     *InsertJson.Role,
 	}
 
-	// Create the claims containing the user information
+	// Create the claims containing the user information for this fields
 	claims := jwt.MapClaims{
 		//"id":       user.ID,
 		"username": user.Username,
 		"email":    user.Email,
+		"role":     user.Role,
 		"exp":      expirationTime.Unix(),
 	}
 
-	// Create the JWT token with the claims
+	// Create the JWT token with the claims we set before
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	// Define the secret key used for signing the token
 	secretKey := []byte("ATTRSAOis98Aha87sNHY48725s45dLOQIJS")
 
-	// Sign the token with the secret key
+	// Sign the token with the secret key, set a secretKey
 	signedToken, err := token.SignedString(secretKey)
 	if err != nil {
 		fmt.Println("Error signing token:", err)

@@ -6,6 +6,8 @@ $ npx -p @angular/cli@15.0.0 ng new frontend
 * routing: y
 * style: scss
 
+https://jwt.io/
+
 ## run front
 $ npx ng serve
 
