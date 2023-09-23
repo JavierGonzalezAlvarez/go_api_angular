@@ -50,7 +50,7 @@ export class SeguridadService {
     //  return false;
     // }
 
-    console.log("there is JWT, logeado")
+    //console.log("there is JWT, logeado")
     return true;
   }
 

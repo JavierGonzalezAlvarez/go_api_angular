@@ -21,6 +21,7 @@ path: frontend
 * $ npx ng g component components/home
 * $ npx ng g component components/profile
 * $ npx ng g component components/register
+* $ npx ng g component components/modal-invoices
 
 * $ npx ng g component components/header/menu
 * $ npx ng g component components/header/title --skip-tests=true
@@ -31,17 +32,18 @@ path: frontend
 * $ npx ng g component list/listInvoicesTableTotal --skip-tests=true
 * $ npx ng g component list/listInvoicesDetails --skip-tests=true
 
+* $ npx ng g component components/seguridad
+* $ npx ng g component components/seguridad/login --skip-tests=true
+* $ npx ng g component components/seguridad/register --skip-tests=true
+
 ## material design
 * $ npx ng add @angular/material
 * $ npx ng g module material
 
 ## service security
-* $ npx ng g component components/seguridad
-* $ npx ng g component components/seguridad/login --skip-tests=true
-* $ npx ng g component components/seguridad/register --skip-tests=true
-
 * $ npx ng g s components/seguridad/seguridad
 * $ npx ng g s components/seguridad/seguridad-interceptor
+* $ npx ng g s components/services/modal-invoices
 
 * $ npx ng g s list/service
 

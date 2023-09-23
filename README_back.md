@@ -7,6 +7,11 @@ doc: https://go.dev/doc/database/querying#multiple_rows
 
 [...]
 
+
+
+## debug in VSC
+- https://stackoverflow.com/questions/68753251/couldnt-start-dlv-dap
+
 # create and add modules to a workspace
 path: backend
 - go clean -modcache

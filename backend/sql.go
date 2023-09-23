@@ -25,7 +25,7 @@ type HeaderPostgres struct {
 	Idheader      int       `json:"idheader"`
 	Companyname   *string   `json:"companyname"`
 	Address       *string   `json:"address"`
-	NumberInvoice *int      `json:"numberinvoice"`
+	NumberInvoice int       `json:"numberinvoice"`
 	DateTime      time.Time `json:"datetime" format:"2006-01-02 15:04:05"`
 	CreatedAt     time.Time `json:"createdat"`
 }
@@ -316,8 +316,8 @@ func create_header_invoice(dataPost []uint8) {
 	myTime := time.Now()
 
 	//insert in postgres
-	sqlStatement := `INSERT INTO header (companyname, address, numberinvoice, date_time) VALUES ($1, $2, $3, $4)`
-	_, err = db.Exec(sqlStatement, InsertJson.Companyname, InsertJson.Address, InsertJson.NumberInvoice, myTime)
+	sqlStatement := `INSERT INTO header (companyname, address, numberinvoice, date_time, created_at) VALUES ($1, $2, $3, $4, $5)`
+	_, err = db.Exec(sqlStatement, InsertJson.Companyname, InsertJson.Address, InsertJson.NumberInvoice, myTime, myTime)
 	if err != nil {
 		log.Fatal(err)
 	} else {

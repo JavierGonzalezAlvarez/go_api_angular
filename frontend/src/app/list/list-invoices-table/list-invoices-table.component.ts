@@ -1,8 +1,11 @@
 import { Component, OnInit, Input } from '@angular/core';
-
+import { Observable } from 'rxjs';
 import { Invoices, serverResponse } from 'src/app/interfaces/invoices';
 import { ServiceService } from '../service.service';
 import { filter, pipe } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment.local';
+import { ModalInvoicesService } from 'src/app/components/services/modal-invoices.service';
 
 @Component({
   selector: 'app-list-invoices-table',
@@ -19,10 +22,16 @@ export class ListInvoicesTableComponent implements OnInit {
   public totalItems: number = 0;
   public totalPages: number = 0;
 
+  private apiURL = environment.urlBackend;
+
   displayedColumns: string[] = ['idheader', 'company', 'address', 'numberinvoice', 'datatime', 'createdat'];
 
 
-  constructor(private listService: ServiceService) {
+  constructor(
+    private listService: ServiceService,
+    private httpClient: HttpClient,
+    private modalService: ModalInvoicesService,
+  ) {
     this.invoices_child_table = [];
   }
 
@@ -46,13 +55,28 @@ export class ListInvoicesTableComponent implements OnInit {
     this.loadPage(page, size);
   }
 
-
   addInvoice() {
-    console.log("to be done");
+
+    this.modalService.openInvoiceModal();
+
+    const invoiceData = {
+      "companyname": "jga_test112",
+      "address": "cl none",
+      "numberinvoice": 12
+    };
+
+    this.listService.createInvoice(invoiceData).subscribe(
+      (response: any) => {
+        console.log('Invoice header created successfully:', response);
+      },
+      (error) => {
+        console.error('Error creating invoice:', error);
+      }
+    );
   }
 
-  removeInvoice() {
-    console.log("to be done");
-  }
+    removeInvoice() {
+      console.log("remove invoice to be done")
+    }
 
 }

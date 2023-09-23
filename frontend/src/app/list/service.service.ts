@@ -12,7 +12,7 @@ import { environment } from 'src/environments/environment.local';
 })
 export class ServiceService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private HttpClient: HttpClient) { }
 
   private urlBackend = environment.urlBackend;
 
@@ -22,7 +22,7 @@ export class ServiceService {
 
 
   public get_all_headers(limitOfResults=3): Observable<serverResponse["invoices"]> {
-    return this.http.get<serverResponse["invoices"]>(this.urlBackend + 'get_all_header_invoices', {
+    return this.HttpClient.get<serverResponse["invoices"]>(this.urlBackend + 'get_all_header_invoices', {
       params: {
         limit: limitOfResults.toString()
       }
@@ -31,7 +31,7 @@ export class ServiceService {
 
   //loaded data - list table
   public get_all_headers_table(limitOfResults=3, totalItems: number): Observable<serverResponse["invoices"]> {
-    return this.http.get<serverResponse["invoices"]>(this.urlBackend + 'get_all_header_invoices', {
+    return this.HttpClient.get<serverResponse["invoices"]>(this.urlBackend + 'get_all_header_invoices', {
       params: {
         limitOfResults: limitOfResults,
         totalItems: totalItems
@@ -41,13 +41,29 @@ export class ServiceService {
   }
 
   public get_all_headers_table_total(totalItems: number): Observable<serverResponse["invoices"]> {
-    return this.http.get<serverResponse["invoices"]>(this.urlBackend + 'get_all_header_invoices_total', {
+    return this.HttpClient.get<serverResponse["invoices"]>(this.urlBackend + 'get_all_header_invoices_total', {
       params: {
         totalItems: totalItems
       }
     })
     .pipe(map( response => response));
   }
+
+  public send_new_invoice() {
+    console.log("sending a post to create a new invoice")
+
+  }
+
+  public createInvoice(formData: any): Observable<{ message: string }> {
+    const {companyname, address, numberinvoice} = formData;
+    console.log("data in form: ", formData);
+    return this.HttpClient.post<{ message: string }>(`${this.urlBackend}createOneHeader`, {
+      companyname,
+      address,
+      numberinvoice,
+    });
+  }
+
 
 
 }

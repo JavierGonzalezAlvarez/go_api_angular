@@ -25,7 +25,9 @@ import { FormularioAutenticacionComponent } from './components/seguridad/formula
 import { ReactiveFormsModule } from '@angular/forms';
 import { ListInvoicesTableComponent } from './list/list-invoices-table/list-invoices-table.component';
 import { ListInvoicesTableTotalComponent } from './list/list-invoices-table-total/list-invoices-table-total.component';
-
+import { ModalInvoicesComponent } from './components/modal-invoices/modal-invoices.component';
+import { FormsModule } from '@angular/forms';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -46,6 +48,7 @@ import { ListInvoicesTableTotalComponent } from './list/list-invoices-table-tota
     FormularioAutenticacionComponent,
     ListInvoicesTableComponent,
     ListInvoicesTableTotalComponent,
+    ModalInvoicesComponent,
   ],
   imports: [
     BrowserModule,
@@ -53,7 +56,9 @@ import { ListInvoicesTableTotalComponent } from './list/list-invoices-table-tota
     BrowserAnimationsModule,
     MaterialModule,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule,
+    MatDialogModule,
   ],
   providers: [
     // error handling in the response

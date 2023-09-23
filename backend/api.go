@@ -29,7 +29,7 @@ type Header struct {
 	Address       string    `json:"address"`
 	NumberInvoice int       `json:"numberinvoice"`
 	DateTime      time.Time `json:"datetime" format:"2006-01-02 15:04:05"`
-	CreatedAt     time.Time `json:"createdat"`
+	CreatedAt     time.Time `json:"createdat" format:"2006-01-02 15:04:05"`
 }
 
 type Detail struct {
