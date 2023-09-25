@@ -6,6 +6,8 @@ import { filter, pipe } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment.local';
 import { ModalInvoicesService } from 'src/app/components/services/modal-invoices.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ModalInvoicesComponent } from 'src/app/components/modal-invoices/modal-invoices.component';
 
 @Component({
   selector: 'app-list-invoices-table',
@@ -31,6 +33,7 @@ export class ListInvoicesTableComponent implements OnInit {
     private listService: ServiceService,
     private httpClient: HttpClient,
     private modalService: ModalInvoicesService,
+    private dialog: MatDialog
   ) {
     this.invoices_child_table = [];
   }
@@ -55,15 +58,39 @@ export class ListInvoicesTableComponent implements OnInit {
     this.loadPage(page, size);
   }
 
-  addInvoice() {
+  addInvoice(): void {
+    const dialogRef = this.dialog.open(ModalInvoicesComponent, {
+      //width: '700px',
+      data: {} // pass initial data in case
+    });
 
-    this.modalService.openInvoiceModal();
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        console.log('Invoice data:', result);
 
+        this.listService.createInvoice(result).subscribe(
+          (response: any) => {
+            console.log('Invoice header created successfully:', response);
+            // refresh data
+            window.location.reload();
+          },
+          (error) => {
+            console.error('Error creating invoice:', error);
+          }
+        );
+      }
+    });
+
+
+    //this.modalService.openInvoiceModal();
+
+    /*
     const invoiceData = {
       "companyname": "jga_test112",
       "address": "cl none",
       "numberinvoice": 12
     };
+
 
     this.listService.createInvoice(invoiceData).subscribe(
       (response: any) => {
@@ -73,10 +100,13 @@ export class ListInvoicesTableComponent implements OnInit {
         console.error('Error creating invoice:', error);
       }
     );
+    */
   }
 
-    removeInvoice() {
-      console.log("remove invoice to be done")
-    }
+  removeInvoice() {
+    console.log("remove invoice to be done")
+  }
+
+
 
 }

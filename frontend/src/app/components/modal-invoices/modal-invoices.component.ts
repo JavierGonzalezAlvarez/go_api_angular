@@ -10,7 +10,6 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 })
 export class ModalInvoicesComponent {
 
-
   constructor(
     public dialogRef: MatDialogRef<ModalInvoicesComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
@@ -20,6 +19,10 @@ export class ModalInvoicesComponent {
     // Process and validate the invoice data as needed
     // Emit the invoice data to the parent component
     this.dialogRef.close(invoiceData);
+  }
+
+  onCancel() {
+    this.dialogRef.close();
   }
 }
 

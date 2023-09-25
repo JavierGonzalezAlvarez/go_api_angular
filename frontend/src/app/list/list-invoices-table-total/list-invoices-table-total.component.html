@@ -31,13 +31,13 @@
       </button>
     </div>
 
-    <div class="pagination" style="margin-left: 20px; margin-right: 20px;">
+    <div class="pagination" style="margin-left: 20px; margin-right: 20px; margin-bottom: 20px;">
       <button (click)="onPageChange(currentPage - 1, size)" [disabled]="currentPage === 1">Previous Page</button>
       <span> {{ currentPage }} / {{ totalPages }} </span>
       <button (click)="onPageChange(currentPage + 1, size)" [disabled]="currentPage === totalPages">Next Page</button>
     </div>
 
-    <div class="table" style="margin-left: 20px; margin-right: 20px;">
+    <div class="table" style="margin-left: 20px; margin-right: 20px; margin-bottom: 20px;">
       <table mat-table [dataSource]="invoices_child_table_total" class="mat-elevation-z8 table_list_invoices">
 
         <ng-container matColumnDef="idheader">

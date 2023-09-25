@@ -1,6 +1,6 @@
 
-<div>
-  <h2>Invoice Details</h2>
+<div class="invoice-form">
+  <h2>Invoices - Header</h2>
   <form (ngSubmit)="onSubmit(form.value)" #form="ngForm">
     <div class="form-group">
       <label for="companyname">Company Name</label>
@@ -14,7 +14,10 @@
       <label for="numberinvoice">Invoice Number</label>
       <input type="number" id="numberinvoice" name="numberinvoice" ngModel required>
     </div>
-    <button type="submit">Submit</button>
+    <div class="form-actions">
+      <button type="submit">Submit</button>
+      <button type="button" (click)="onCancel()">Cancel</button>
+    </div>
   </form>
 </div>
 
