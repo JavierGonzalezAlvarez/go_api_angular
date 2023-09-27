@@ -114,7 +114,7 @@ func get_all_headers_invoices_total() []ResponseTotalHeaders {
 	defer db.Close()
 
 	// query
-	rows, err := db.Query(`SELECT * FROM "header"`)
+	rows, err := db.Query(`SELECT * FROM "header" ORDER BY created_at DESC`)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -169,7 +169,7 @@ func get_all_headers_invoices() []HeaderPostgres {
 	defer db.Close()
 
 	// query
-	rows, err := db.Query(`SELECT * FROM "header"`)
+	rows, err := db.Query(`SELECT * FROM "header" ORDER by created_at DESC`)
 	if err != nil {
 		log.Fatal(err)
 	}
